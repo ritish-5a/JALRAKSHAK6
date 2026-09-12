@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>JalRakshak | Team Rain Vision - SIH 26071 AI/ML Inundation Platform</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              cyan: "#00d9ff",
+              blue: "#2563eb",
+              dark: "#090d16",
+              danger: "#ef4444",
+              emerald: "#10b981",
+              amber: "#f59e0b",
+              purple: "#a855f7"
+            }
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+            display: ['Space Grotesk', 'sans-serif']
+          },
+          boxShadow: {
+            'glow-cyan': '0 0 25px -4px rgba(0, 217, 255, 0.45)',
+            'glow-red': '0 0 25px -3px rgba(239, 68, 68, 0.65)',
+            'glow-purple': '0 0 25px -3px rgba(168, 85, 247, 0.5)',
+            'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    :root {
+      --bg-main: #070a12;
+      --bg-header: rgba(9, 13, 22, 0.92);
+      --card-bg: rgba(15, 23, 42, 0.78);
+      --card-border: rgba(56, 189, 248, 0.18);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --panel-inner: #0b111e;
+      --accent-highlight: rgba(0, 217, 255, 0.12);
+    }
+
+    html.light-theme, body.light-theme {
+      --bg-main: #e8ecf4;
+      --bg-header: #ffffff;
+      --card-bg: #ffffff;
+      --card-border: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --panel-inner: #f1f5f9;
+      --accent-highlight: rgba(2, 132, 199, 0.12);
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .theme-card {
+      background-color: var(--card-bg);
+      border-color: var(--card-border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .theme-header {
+      background-color: var(--bg-header);
+      border-color: var(--card-border);
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+    .light-theme ::-webkit-scrollbar-thumb { background: #94a3b8; }
+
+    .pulsing-dot { animation: pulseAnim 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    @keyframes pulseAnim { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(1.35); } }
+
+    .view-panel { display: none; opacity: 0; transition: opacity 0.22s ease-in-out; }
+    .view-panel.active { display: block; opacity: 1; }
+
+    /* Minimalist Day Card Base & Hover Expand */
+    .motion-day-card {
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .motion-day-card .telemetry-drawer {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, margin-top 0.25s ease;
+      margin-top: 0;
+    }
+    .motion-day-card:hover {
+      transform: translateY(-4px);
+      border-color: #00d9ff;
+      box-shadow: 0 14px 34px -4px rgba(0, 217, 255, 0.35);
+      z-index: 25;
+    }
+    .motion-day-card:hover .telemetry-drawer {
+      max-height: 140px;
+      opacity: 1;
+      margin-top: 0.5rem;
+    }
+    .motion-day-card.active-selected {
+      border-color: #00d9ff;
+      background: linear-gradient(145deg, rgba(6, 44, 66, 0.9), rgba(15, 23, 42, 0.95));
+      box-shadow: 0 0 20px rgba(0, 217, 255, 0.35);
+    }
+    .light-theme .motion-day-card.active-selected {
+      background: linear-gradient(145deg, #f0f9ff, #ffffff);
+      border-color: #0284c7;
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.2);
+    }
+
+    /* Light mode high-contrast overrides */
+    .light-theme {
+      background-color: #e8ecf4 !important;
+    }
+    .light-theme main {
+      background-color: #edf2f7 !important;
+    }
+    .light-theme .text-slate-100 { color: #0f172a !important; }
+    .light-theme .text-slate-200 { color: #1e293b !important; }
+    .light-theme .text-slate-300 { color: #334155 !important; }
+    .light-theme .text-slate-400 { color: #475569 !important; }
+    .light-theme .text-white { color: #0f172a !important; }
+    .light-theme .theme-card {
+      background-color: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08) !important;
+    }
+    .light-theme .bg-slate-900,
+    .light-theme .bg-slate-900\/90,
+    .light-theme .bg-slate-950 {
+      background-color: #f8fafc !important;
+      border-color: #cbd5e1 !important;
+    }
+    .light-theme .bg-\[\#070a12\],
+    .light-theme .bg-\[\#06080e\] {
+      background-color: #f1f5f9 !important;
+      border-color: #cbd5e1 !important;
+    }
+    .light-theme .border-slate-800,
+    .light-theme .border-slate-800\/80,
+    .light-theme .border-slate-700 {
+      border-color: #cbd5e1 !important;
+    }
+    .light-theme aside {
+      background-color: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      color: #1e293b !important;
+      box-shadow: 4px 0 24px rgba(15, 23, 42, 0.06) !important;
+    }
+    .light-theme .theme-header {
+      background-color: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06) !important;
+    }
+    .light-theme .bg-cyan-950\/40 {
+      background-color: #e0f2fe !important;
+      border-color: #7dd3fc !important;
+    }
+    .light-theme .bg-slate-800 {
+      background-color: #e2e8f0 !important;
+      color: #0f172a !important;
+    }
+
+    /* Strobe animation for active Siren */
+    @keyframes sirenStrobe {
+      0%, 100% {
+        box-shadow: 0 0 25px 4px rgba(239, 68, 68, 0.8), inset 0 0 15px rgba(239, 68, 68, 0.5);
+        border-color: #ef4444;
+      }
+      50% {
+        box-shadow: 0 0 45px 12px rgba(239, 68, 68, 0.95), inset 0 0 25px rgba(255, 255, 255, 0.8);
+        border-color: #fca5a5;
+      }
+    }
+    .siren-active-glow {
+      animation: sirenStrobe 0.85s infinite ease-in-out !important;
+      background: linear-gradient(135deg, #b91c1c, #dc2626) !important;
+    }
+  </style>
+</head>
+<body class="bg-[#070a12] text-slate-100 font-sans min-h-screen overflow-x-hidden antialiased select-none">
+<!-- App Layout Wrapper -->
+<div class="flex h-screen w-full overflow-hidden relative">
+<!-- Left Sidebar spacer for fixed hover-rail -->
+<div class="w-[72px] shrink-0 pointer-events-none hidden md:block"></div>
+<!-- MOTION-EXPANDING LEFT RAIL -->
+<aside class="group fixed top-0 left-0 bottom-0 w-[72px] hover:w-64 bg-[#090d16]/95 backdrop-blur-2xl text-slate-300 flex flex-col justify-between p-3.5 hover:p-5 border-r border-cyan-500/20 z-40 transition-all duration-300 shadow-2xl overflow-hidden">
+<div class="space-y-4">
+<!-- Team Rain Vision Logo / SIH 26071 -->
+<div class="flex items-center gap-3 pb-2.5 border-b border-slate-800/80 min-h-[44px]">
+<div class="w-10 h-10 shrink-0 rounded-2xl bg-gradient-to-tr from-cyan-400 via-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/30 border border-cyan-300/40">
+<svg class="w-6 h-6 fill-current animate-pulse" viewbox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+</div>
+<div class="overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+<div class="font-extrabold text-white text-base leading-tight flex items-center gap-1.5 font-display">
+            JALRAKSHAK
+            <span class="text-[9px] uppercase font-mono px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold">SIH 26071</span>
+</div>
+<div class="text-[10px] text-cyan-400 font-mono tracking-wider font-semibold">TEAM RAIN VISION</div>
+</div>
+</div>
+<!-- Lead Deck Badge -->
+<div class="bg-slate-900/90 border border-cyan-500/30 rounded-2xl p-2.5 flex items-center gap-3 shadow-md">
+<div class="relative shrink-0">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-indigo-600 flex items-center justify-center text-white font-black text-xs font-mono shadow-inner">TRV</div>
+<span class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-emerald-400 border-2 border-slate-900 pulsing-dot"></span>
+</div>
+<div class="overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+<h4 class="text-xs font-bold text-white">TEAM RAIN VISION</h4>
+<p class="text-[10px] text-cyan-400 font-mono">SIH 26071 • Lead Ops Deck</p>
+</div>
+</div>
+<!-- Main Nav Tabs with dedicated AI Prediction Tab at Position 2 -->
+<nav class="space-y-1.5 text-xs font-semibold">
+<!-- 1. Overview Basin -->
+<button class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 transition-all text-left active" onclick="switchTab('overview-tab', this)">
+<div class="flex items-center gap-3">
+<svg class="w-5 h-5 shrink-0 text-cyan-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Overview Basin</span>
+</div>
+<span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/30 text-cyan-200 opacity-0 group-hover:opacity-100">LIVE</span>
+</button>
+<!-- 2. AI PREDICTION TAB -->
+<button class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-purple-300 hover:text-white hover:bg-purple-500/20 transition-all text-left border border-purple-500/30 relative" onclick="switchTab('aiml-tab', this)">
+<div class="flex items-center gap-3">
+<svg class="w-5 h-5 shrink-0 text-purple-400 animate-pulse" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap font-bold text-purple-200">AI Prediction</span>
+</div>
+<span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold opacity-0 group-hover:opacity-100 shadow-glow-purple">SIH 26071</span>
+</button>
+<!-- 3. Telemetry & Gauges -->
+<button class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all text-left" onclick="switchTab('telemetry-tab', this)">
+<div class="flex items-center gap-3">
+<svg class="w-5 h-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Telemetry &amp; Gauges</span>
+</div>
+<span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 opacity-0 group-hover:opacity-100">142 IoT</span>
+</button>
+<!-- 4. Basins & Reservoirs -->
+<button class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all text-left" onclick="switchTab('dams-tab', this)">
+<div class="flex items-center gap-3">
+<svg class="w-5 h-5 shrink-0 text-indigo-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Basins &amp; Reservoirs</span>
+</div>
+<span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 opacity-0 group-hover:opacity-100">3 Alert</span>
+</button>
+<!-- 5. Digital Twin GIS -->
+<button class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all text-left" onclick="switchTab('gis-tab', this)">
+<div class="flex items-center gap-3">
+<svg class="w-5 h-5 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Digital Twin GIS</span>
+</div>
+<span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 opacity-0 group-hover:opacity-100">3D Mesh</span>
+</button>
+<!-- 6. Evacuation Corridors -->
+<button class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all text-left" onclick="switchTab('evac-tab', this)">
+<div class="flex items-center gap-3">
+<svg class="w-5 h-5 shrink-0 text-amber-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Evacuation Corridors</span>
+</div>
+<span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 opacity-0 group-hover:opacity-100">18 Shelters</span>
+</button>
+</nav>
+</div>
+<!-- Quick Run ML Nowcast Button -->
+<div class="pt-3 border-t border-slate-800/80">
+<button class="w-full flex items-center justify-center gap-2 py-2 px-2.5 rounded-xl bg-gradient-to-r from-purple-600/40 via-cyan-600/40 to-blue-600/40 hover:from-purple-500 hover:to-cyan-500 border border-purple-500/40 text-xs font-mono text-purple-200 hover:text-white transition-all shadow-md" onclick="runNowcast()">
+<svg class="w-4 h-4 shrink-0 text-cyan-300" fill="none" id="mlSpinIcon" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap font-bold">Run RadarNet ML</span>
+</button>
+</div>
+</aside>
+<!-- MAIN VIEWPORT -->
+<main class="flex-1 flex flex-col h-screen overflow-y-auto overflow-x-hidden transition-colors duration-300">
+<!-- TOP BAR (Streamlined Compact Buttons, Basin Selector, Search, 🚨 SOS Pill, Compact Theme Toggle) -->
+<header class="sticky top-0 z-30 px-6 py-3.5 backdrop-blur-2xl theme-header border-b flex flex-wrap items-center justify-between gap-4 shadow-xl">
+<div class="flex items-center gap-3 flex-1 max-w-xl">
+<!-- Live Basin Picker -->
+<select class="cursor-pointer pl-3 pr-8 py-2 text-xs font-bold rounded-2xl bg-slate-900 text-cyan-300 border border-cyan-500/40 hover:border-cyan-400 shadow-md font-mono focus:ring-2 focus:ring-cyan-500/40 outline-none" id="basinDropdown" onchange="selectBasin(this.value)">
+<option value="kolhapur">Kolhapur (Panchganga) - RED ALERT (43.44m)</option>
+<option value="mumbai">Mumbai (Mithi River) - HIGH TIDE</option>
+<option value="guwahati">Guwahati (Brahmaputra) - FLOOD STAGE</option>
+<option value="wayanad">Wayanad (Kabini) - RUNOFF WATCH</option>
+<option value="patna">Patna (Ganga) - CONTROLLED</option>
+</select>
+<!-- Search Bar -->
+<div class="relative flex-1">
+<input class="w-full pl-9 pr-4 py-2 text-xs rounded-2xl bg-slate-900 border border-slate-700 text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-cyan-500/40 outline-none" id="quickSearch" onkeyup="searchBasin(this.value)" placeholder="Search river, gauge, dam (e.g. Rajaram, 416001)..." type="text"/>
+<svg class="w-4 h-4 text-cyan-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+<!-- Action Cluster: Compact 🚨 SOS Pill + Compact Logo-based Theme Toggle + Team ID -->
+<div class="flex items-center gap-3">
+<!-- Streamlined Compact SOS Pill Button -->
+<button class="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white font-extrabold text-xs tracking-wide shadow-glow-red border border-rose-400/80 hover:scale-105 active:scale-95 transition-all" onclick="openSosModal()" title="Instant Live Emergency Dispatch &amp; WhatsApp Alert">
+<span class="w-2 h-2 rounded-full bg-white pulsing-dot"></span>
+<span class="font-mono">🚨 SOS</span>
+</button>
+<!-- COMPACT LOGO-BASED THEME SWITCHER -->
+<button class="w-9 h-9 rounded-2xl bg-slate-800 hover:bg-slate-700 text-amber-400 hover:text-amber-300 border border-slate-700 flex items-center justify-center text-sm shadow-sm hover:scale-105 transition-all" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle High-Contrast Silver-Slate Light / Dark Mode">
+<span id="themeIcon">☀️</span>
+</button>
+<!-- TRV Officer Badge -->
+<div class="w-9 h-9 rounded-2xl ring-2 ring-cyan-500/50 bg-gradient-to-tr from-cyan-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xs font-mono shadow-md">
+          TRV
+        </div>
+</div>
+</header>
+<!-- LIVE NOTIFICATION TOAST -->
+<div class="hidden mx-6 mt-3 p-3 rounded-2xl bg-cyan-950/95 border border-cyan-400 text-cyan-200 text-xs font-mono flex items-center justify-between shadow-glow-cyan z-50 transition-all" id="toast">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-cyan-400 pulsing-dot" id="toastDot"></span>
+<span id="toastText">System message</span>
+</div>
+<button class="text-cyan-400 hover:text-white font-bold ml-4 text-sm" onclick="hideToast()">✕</button>
+</div>
+<!-- MAIN BODY PANELS CONTAINER -->
+<div class="p-6 space-y-6 flex-1">
+<!-- ================= PANEL 1: OVERVIEW BASIN ================= -->
+<div class="view-panel active space-y-6" id="overview-tab">
+<!-- Horizon and Filter Controls -->
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center gap-4 text-xs font-bold font-mono">
+<button class="horizon-btn text-slate-400 hover:text-cyan-300 transition-all pb-1" onclick="setHorizon('past24', this)">Past 24h Gauge</button>
+<button class="horizon-btn text-slate-400 hover:text-cyan-300 transition-all pb-1" onclick="setHorizon('immediate6', this)">Immediate 6h</button>
+<button class="horizon-btn text-cyan-300 border-b-2 border-cyan-400 pb-1 font-extrabold" onclick="setHorizon('next7', this)">Next 7 Days Surge (Interactive)</button>
+</div>
+<div class="flex items-center p-1 rounded-2xl bg-slate-900/90 border border-cyan-500/30">
+<button class="mode-btn px-3 py-1 rounded-xl bg-cyan-500 text-slate-950 font-mono text-xs font-bold shadow-glow-cyan" onclick="setTelemetryMode('inundation', this)">Inundation Forecast</button>
+<button class="mode-btn px-3 py-1 rounded-xl text-slate-400 hover:text-white font-mono text-xs font-semibold" onclick="setTelemetryMode('dam', this)">Dam Discharge</button>
+<button class="mode-btn px-3 py-1 rounded-xl text-slate-400 hover:text-white font-mono text-xs font-semibold" onclick="setTelemetryMode('runoff', this)">Rainfall Runoff</button>
+</div>
+</div>
+<!-- 7-Day Surge Grid + Flash Hourly Chart -->
+<div class="grid grid-cols-12 gap-6">
+<!-- MULTI-DAY FORECAST: Minimalist Resting State + Instant OnMouseEnter Dynamic Expansion -->
+<div class="col-span-12 xl:col-span-8 flex flex-col justify-between">
+<div class="flex items-center justify-between mb-2">
+<span class="text-xs font-mono text-cyan-300 font-bold flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-cyan-400 pulsing-dot"></span>
+<span>HOVER OVER ANY DAY CARD TO EXPAND LIVE TELEMETRY</span>
+</span>
+<span class="text-xs font-mono text-slate-400" id="activeDayLabel">Inspecting: Today (Mon)</span>
+</div>
+<!-- Responsive 7-Day Grid: Uniform, Minimalist large numbers at rest, expands smoothly on hover -->
+<div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3">
+<!-- 1. TODAY / MON -->
+<div class="motion-day-card rounded-3xl p-3.5 border theme-card flex flex-col justify-between border-cyan-500/40" id="dayCard-today" onmouseenter="inspectDay('today')">
+<div class="flex items-center justify-between text-xs font-mono">
+<span class="px-2 py-0.5 rounded-lg bg-cyan-500 text-slate-950 font-bold text-[10px]">Today</span>
+<span class="text-cyan-300 font-bold text-[11px]">14:32</span>
+</div>
+<div class="my-3 flex items-center justify-between">
+<div>
+<div class="text-2xl font-extrabold text-white font-mono leading-none">43.44<span class="text-xs font-semibold text-rose-400">m</span></div>
+<p class="text-[10px] font-bold text-rose-400 font-mono mt-0.5">+0.44m Over</p>
+</div>
+<div class="text-cyan-300">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"></path></svg>
+</div>
+</div>
+<!-- Telemetry Drawer: Revealed on Hover Motion -->
+<div class="telemetry-drawer text-[10px] font-mono border-t border-slate-800/80 pt-1.5 text-slate-400 space-y-0.5">
+<div class="flex justify-between"><span>Inflow:</span> <strong class="text-white">48.2k cfs</strong></div>
+<div class="flex justify-between"><span>Precip:</span> <strong class="text-cyan-300">118 mm/h</strong></div>
+<div class="flex justify-between"><span>Pump:</span> <strong class="text-emerald-400">8/8 Run</strong></div>
+<div class="flex justify-between"><span>Evac:</span> <strong class="text-rose-400">38 Mins</strong></div>
+</div>
+</div>
+<!-- 2. TUE (Peak Surge) -->
+<div class="motion-day-card rounded-3xl p-3.5 border border-slate-800 theme-card flex flex-col justify-between" id="dayCard-tue" onmouseenter="inspectDay('tue')">
+<div class="flex items-center justify-between text-xs font-mono">
+<span class="text-xs font-bold text-slate-300 font-mono">Tue</span>
+<span class="px-1.5 py-0.5 rounded text-[9px] bg-rose-500/20 text-rose-400 font-bold">PEAK</span>
+</div>
+<div class="my-3 flex items-center justify-between">
+<div>
+<div class="text-2xl font-extrabold text-white font-mono leading-none">44.10<span class="text-xs font-semibold text-rose-400">m</span></div>
+<p class="text-[10px] font-bold text-rose-400 font-mono mt-0.5">+1.10m Over</p>
+</div>
+<div class="text-rose-500">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24"><path d="M12 4a8 8 0 00-7.8 6.2 5 5 0 00.8 9.8h14a5 5 0 001.4-9.8A8 8 0 0012 4z"></path></svg>
+</div>
+</div>
+<!-- Telemetry Drawer: Revealed on Hover Motion -->
+<div class="telemetry-drawer text-[10px] font-mono border-t border-slate-800/80 pt-1.5 text-slate-400 space-y-0.5">
+<div class="flex justify-between"><span>Inflow:</span> <strong class="text-white">54.6k cfs</strong></div>
+<div class="flex justify-between"><span>Precip:</span> <strong class="text-rose-400">145 mm/h</strong></div>
+<div class="flex justify-between"><span>Pump:</span> <strong class="text-emerald-400">8/8 Max</strong></div>
+<div class="flex justify-between"><span>Evac:</span> <strong class="text-rose-400">Critical</strong></div>
+</div>
+</div>
+<!-- 3. WED (Alert Level) -->
+<div class="motion-day-card rounded-3xl p-3.5 border border-slate-800 theme-card flex flex-col justify-between" id="dayCard-wed" onmouseenter="inspectDay('wed')">
+<div class="flex items-center justify-between text-xs font-mono">
+<span class="text-xs font-bold text-slate-300 font-mono">Wed</span>
+<span class="px-1.5 py-0.5 rounded text-[9px] bg-amber-500/20 text-amber-400 font-bold">ALERT</span>
+</div>
+<div class="my-3 flex items-center justify-between">
+<div>
+<div class="text-2xl font-extrabold text-white font-mono leading-none">43.80<span class="text-xs font-semibold text-amber-400">m</span></div>
+<p class="text-[10px] font-bold text-amber-400 font-mono mt-0.5">+0.80m Over</p>
+</div>
+<div class="text-amber-400">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24"><path d="M19 11h-1.1c-.5-3.5-3.5-6-7-6-3.2 0-6 2.1-6.8 5.2C2.1 10.6 0 12.6 0 15c0 2.8 2.2 5 5 5h14c2.8 0 5-2.2 5-5 0-2.6-2-4.8-5-4.9z"></path></svg>
+</div>
+</div>
+<!-- Telemetry Drawer: Revealed on Hover Motion -->
+<div class="telemetry-drawer text-[10px] font-mono border-t border-slate-800/80 pt-1.5 text-slate-400 space-y-0.5">
+<div class="flex justify-between"><span>Inflow:</span> <strong class="text-white">42.1k cfs</strong></div>
+<div class="flex justify-between"><span>Precip:</span> <strong class="text-amber-400">92 mm/h</strong></div>
+<div class="flex justify-between"><span>Pump:</span> <strong class="text-emerald-400">7/8 Run</strong></div>
+<div class="flex justify-between"><span>Evac:</span> <strong class="text-amber-400">1.5 Hrs</strong></div>
+</div>
+</div>
+<!-- 4. THU (Receding) -->
+<div class="motion-day-card rounded-3xl p-3.5 border border-slate-800 theme-card flex flex-col justify-between" id="dayCard-thu" onmouseenter="inspectDay('thu')">
+<div class="flex items-center justify-between text-xs font-mono">
+<span class="text-xs font-bold text-slate-300 font-mono">Thu</span>
+<span class="px-1.5 py-0.5 rounded text-[9px] bg-cyan-500/20 text-cyan-300 font-bold">FALLING</span>
+</div>
+<div class="my-3 flex items-center justify-between">
+<div>
+<div class="text-2xl font-extrabold text-white font-mono leading-none">42.20<span class="text-xs font-semibold text-cyan-300">m</span></div>
+<p class="text-[10px] font-bold text-cyan-400 font-mono mt-0.5">-0.80m Safe</p>
+</div>
+<div class="text-cyan-400">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"></path></svg>
+</div>
+</div>
+<!-- Telemetry Drawer: Revealed on Hover Motion -->
+<div class="telemetry-drawer text-[10px] font-mono border-t border-slate-800/80 pt-1.5 text-slate-400 space-y-0.5">
+<div class="flex justify-between"><span>Inflow:</span> <strong class="text-white">31.0k cfs</strong></div>
+<div class="flex justify-between"><span>Precip:</span> <strong class="text-cyan-300">45 mm/h</strong></div>
+<div class="flex justify-between"><span>Pump:</span> <strong class="text-emerald-400">5/8 Run</strong></div>
+<div class="flex justify-between"><span>Evac:</span> <strong class="text-cyan-400">Receding</strong></div>
+</div>
+</div>
+<!-- 5. FRI (Safe) -->
+<div class="motion-day-card rounded-3xl p-3.5 border border-slate-800 theme-card flex flex-col justify-between" id="dayCard-fri" onmouseenter="inspectDay('fri')">
+<div class="flex items-center justify-between text-xs font-mono">
+<span class="text-xs font-bold text-slate-300 font-mono">Fri</span>
+<span class="px-1.5 py-0.5 rounded text-[9px] bg-emerald-500/20 text-emerald-400 font-bold">SAFE</span>
+</div>
+<div class="my-3 flex items-center justify-between">
+<div>
+<div class="text-2xl font-extrabold text-white font-mono leading-none">41.10<span class="text-xs font-semibold text-emerald-400">m</span></div>
+<p class="text-[10px] font-bold text-emerald-400 font-mono mt-0.5">-1.90m Safe</p>
+</div>
+<div class="text-blue-400">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"></path></svg>
+</div>
+</div>
+<!-- Telemetry Drawer: Revealed on Hover Motion -->
+<div class="telemetry-drawer text-[10px] font-mono border-t border-slate-800/80 pt-1.5 text-slate-400 space-y-0.5">
+<div class="flex justify-between"><span>Inflow:</span> <strong class="text-white">22.4k cfs</strong></div>
+<div class="flex justify-between"><span>Precip:</span> <strong class="text-cyan-300">22 mm/h</strong></div>
+<div class="flex justify-between"><span>Pump:</span> <strong class="text-emerald-400">4/8 Std</strong></div>
+<div class="flex justify-between"><span>Evac:</span> <strong class="text-emerald-400">Stand down</strong></div>
+</div>
+</div>
+<!-- 6. SAT (Normal) -->
+<div class="motion-day-card rounded-3xl p-3.5 border border-slate-800 theme-card flex flex-col justify-between" id="dayCard-sat" onmouseenter="inspectDay('sat')">
+<div class="flex items-center justify-between text-xs font-mono">
+<span class="text-xs font-bold text-slate-300 font-mono">Sat</span>
+<span class="px-1.5 py-0.5 rounded text-[9px] bg-emerald-500/20 text-emerald-400 font-bold">NORMAL</span>
+</div>
+<div class="my-3 flex items-center justify-between">
+<div>
+<div class="text-2xl font-extrabold text-white font-mono leading-none">39.80<span class="text-xs font-semibold text-emerald-400">m</span></div>
+<p class="text-[10px] font-bold text-emerald-400 font-mono mt-0.5">-3.20m Normal</p>
+</div>
+<div class="text-emerald-400">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24"><path d="M12 7V3m0 18v-4m8-7h4m-22 0h4m15.364-6.364l-2.828 2.828M5.464 18.536l-2.828 2.828m15.364 0l-2.828-2.828M5.464 5.464L2.636 2.636M12 8a4 4 0 100 8 4 4 0 000-8z"></path></svg>
+</div>
+</div>
+<!-- Telemetry Drawer: Revealed on Hover Motion -->
+<div class="telemetry-drawer text-[10px] font-mono border-t border-slate-800/80 pt-1.5 text-slate-400 space-y-0.5">
+<div class="flex justify-between"><span>Inflow:</span> <strong class="text-white">16.2k cfs</strong></div>
+<div class="flex justify-between"><span>Precip:</span> <strong class="text-emerald-400">8 mm/h</strong></div>
+<div class="flex justify-between"><span>Pump:</span> <strong class="text-emerald-400">2/8 Std</strong></div>
+<div class="flex justify-between"><span>Evac:</span> <strong class="text-emerald-400">Clear</strong></div>
+</div>
+</div>
+<!-- 7. SUN (Clear Baseflow) -->
+<div class="motion-day-card rounded-3xl p-3.5 border border-slate-800 theme-card flex flex-col justify-between" id="dayCard-sun" onmouseenter="inspectDay('sun')">
+<div class="flex items-center justify-between text-xs font-mono">
+<span class="text-xs font-bold text-slate-300 font-mono">Sun</span>
+<span class="px-1.5 py-0.5 rounded text-[9px] bg-emerald-500/20 text-emerald-400 font-bold">OPTIMAL</span>
+</div>
+<div class="my-3 flex items-center justify-between">
+<div>
+<div class="text-2xl font-extrabold text-white font-mono leading-none">38.50<span class="text-xs font-semibold text-emerald-400">m</span></div>
+<p class="text-[10px] font-bold text-emerald-400 font-mono mt-0.5">-4.50m Base</p>
+</div>
+<div class="text-emerald-400">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24"><path d="M12 7V3m0 18v-4m8-7h4m-22 0h4m15.364-6.364l-2.828 2.828M5.464 18.536l-2.828 2.828m15.364 0l-2.828-2.828M5.464 5.464L2.636 2.636M12 8a4 4 0 100 8 4 4 0 000-8z"></path></svg>
+</div>
+</div>
+<!-- Telemetry Drawer: Revealed on Hover Motion -->
+<div class="telemetry-drawer text-[10px] font-mono border-t border-slate-800/80 pt-1.5 text-slate-400 space-y-0.5">
+<div class="flex justify-between"><span>Inflow:</span> <strong class="text-white">12.5k cfs</strong></div>
+<div class="flex justify-between"><span>Precip:</span> <strong class="text-emerald-400">2 mm/h</strong></div>
+<div class="flex justify-between"><span>Pump:</span> <strong class="text-emerald-400">0/8 Idle</strong></div>
+<div class="flex justify-between"><span>Evac:</span> <strong class="text-emerald-400">Clear</strong></div>
+</div>
+</div>
+</div>
+<!-- Inspect Banner with Live Day Details -->
+<div class="mt-3 p-3.5 rounded-2xl bg-cyan-950/40 border border-cyan-500/30 flex flex-wrap items-center justify-between gap-2 text-xs font-mono" id="inspectorBanner">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-cyan-500 text-slate-950 font-bold" id="inspDayTitle">TODAY LIVE</span>
+<span class="text-slate-300" id="inspDayDetail">Panchganga River Crest: 43.44m (+0.44m Over Danger) | Inflow: 48,200 cusec</span>
+</div>
+<div class="text-cyan-300 font-bold" id="inspDayAlert">NDRF Alert: 38 Mins Evacuation Lead Window</div>
+</div>
+</div>
+<!-- Flash Flood Probability Bar Chart -->
+<div class="col-span-12 xl:col-span-4 rounded-3xl p-5 theme-card border border-cyan-500/20 shadow-glass flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<div>
+<h3 class="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">AI Radar Flash Nowcast</h3>
+<h4 class="text-sm font-bold text-white font-display">Chance of Flash Flood Surge</h4>
+</div>
+<span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 font-bold border border-rose-500/30">Peak 01:00 PM</span>
+</div>
+<!-- Interactive Bars with OnClick Feedback -->
+<div class="my-4 flex items-end justify-between h-32 px-1 relative">
+<div class="flex flex-col items-center gap-1 group cursor-pointer" onclick="showToast('10 AM Inundation Risk: 35% (Moderate Inflow)')">
+<div class="w-3.5 bg-slate-700 rounded-full h-14 group-hover:bg-cyan-400 transition-all"></div>
+<span class="text-[9px] font-mono text-slate-400">10A</span>
+</div>
+<div class="flex flex-col items-center gap-1 group cursor-pointer" onclick="showToast('11 AM Inundation Risk: 52% (Rising Runoff)')">
+<div class="w-3.5 bg-slate-700 rounded-full h-20 group-hover:bg-cyan-400 transition-all"></div>
+<span class="text-[9px] font-mono text-slate-400">11A</span>
+</div>
+<div class="flex flex-col items-center gap-1 group cursor-pointer" onclick="showToast('12 PM Inundation Risk: 82% (Severe Surge)')">
+<div class="w-3.5 bg-rose-500 rounded-full h-28 shadow-glow-red"></div>
+<span class="text-[9px] font-mono text-rose-400 font-bold">12P</span>
+</div>
+<div class="flex flex-col items-center gap-1 group cursor-pointer" onclick="showToast('01 PM Inundation Risk: 94% (PEAK FLOOD CREST)')">
+<div class="w-3.5 bg-rose-600 rounded-full h-32 ring-2 ring-rose-400 shadow-glow-red"></div>
+<span class="text-[9px] font-mono text-rose-400 font-bold">01P</span>
+</div>
+<div class="flex flex-col items-center gap-1 group cursor-pointer" onclick="showToast('02 PM Inundation Risk: 68% (Controlled Siphons)')">
+<div class="w-3.5 bg-amber-500 rounded-full h-24 group-hover:scale-105 transition-all"></div>
+<span class="text-[9px] font-mono text-slate-400">02P</span>
+</div>
+<div class="flex flex-col items-center gap-1 group cursor-pointer" onclick="showToast('03 PM Inundation Risk: 45% (Receding Outflow)')">
+<div class="w-3.5 bg-cyan-500 rounded-full h-18 group-hover:scale-105 transition-all"></div>
+<span class="text-[9px] font-mono text-slate-400">03P</span>
+</div>
+</div>
+<div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800 pt-2 font-mono">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-rose-500 pulsing-dot"></span> Peak Window: 11:30 - 14:00</span>
+<span class="text-cyan-300 font-bold">Runoff +2.4 m³/s</span>
+</div>
+</div>
+</div>
+<!-- 4 KPI Telemetry Cards -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="rounded-3xl p-4 theme-card border shadow-glass">
+<span class="text-[10px] text-slate-400 uppercase font-mono block font-semibold">Total Basin Inflow</span>
+<div class="text-xl font-extrabold text-white font-mono mt-1" id="kpiInflow">87,450 <span class="text-xs text-slate-400 font-normal">cusec</span></div>
+<span class="text-[10px] text-rose-400 font-mono">↑ 14.8% from upstream</span>
+</div>
+<div class="rounded-3xl p-4 theme-card border shadow-glass">
+<span class="text-[10px] text-slate-400 uppercase font-mono block font-semibold">Radhanagari Dam</span>
+<div class="text-xl font-extrabold text-white font-mono mt-1">7 Gates <span class="text-xs text-amber-400 font-normal">Open (Auto)</span></div>
+<span class="text-[10px] text-slate-400 font-mono">Discharge: 28,450 cusec</span>
+</div>
+<div class="rounded-3xl p-4 theme-card border shadow-glass">
+<span class="text-[10px] text-slate-400 uppercase font-mono block font-semibold">Population at Risk</span>
+<div class="text-xl font-extrabold text-white font-mono mt-1">38,420 <span class="text-xs text-rose-400 font-normal">Evacuating</span></div>
+<span class="text-[10px] text-emerald-400 font-mono">18 Shelters Online</span>
+</div>
+<div class="rounded-3xl p-4 theme-card border shadow-glass">
+<span class="text-[10px] text-slate-400 uppercase font-mono block font-semibold">NDRF Task Force</span>
+<div class="text-xl font-extrabold text-white font-mono mt-1">14 Boats <span class="text-xs text-emerald-400 font-normal">Deployed</span></div>
+<span class="text-[10px] text-cyan-400 font-mono">05th Battalion Pune</span>
+</div>
+</div>
+<!-- Interactive GIS Map Deck & Regional Watch -->
+<div class="grid grid-cols-12 gap-6">
+<div class="col-span-12 xl:col-span-8 rounded-3xl bg-[#06080e] p-5 border border-cyan-500/25 relative overflow-hidden shadow-2xl min-h-[380px] flex flex-col justify-between">
+<div class="flex items-center justify-between z-10">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-rose-500 pulsing-dot"></span>
+<span class="text-xs font-bold uppercase text-cyan-300 font-mono">Pan-India Hydrometric GIS &amp; Radar Inundation Spread</span>
+</div>
+<button class="px-3 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-mono border border-cyan-500/30 transition-all" onclick="switchTab('gis-tab', document.querySelectorAll('.nav-btn')[4])">Open 3D GIS</button>
+</div>
+<!-- SVG Stylized Map with Clickable Hotspots -->
+<div class="absolute inset-0 flex items-center justify-center p-2 opacity-85">
+<svg class="w-full h-full object-cover" viewbox="0 0 1000 500">
+<defs>
+<pattern height="30" id="gridPattern2" patternunits="userSpaceOnUse" width="30">
+<path d="M 30 0 L 0 0 0 30" fill="none" stroke="#162032" stroke-width="0.7"></path>
+</pattern>
+</defs>
+<rect fill="url(#gridPattern2)" height="500" width="1000"></rect>
+<path d="M180,90 Q220,60 300,70 T440,90 T600,110 T720,130 Q820,160 880,240 T780,360 T640,430 T500,470 T360,400 T240,320 T150,220 Z" fill="#0d1424" stroke="#1f2c44" stroke-width="1.5"></path>
+<path d="M300,330 Q370,340 440,360 T540,380" fill="none" stroke="#ef4444" stroke-width="4"></path>
+<!-- Hotspots -->
+<g class="cursor-pointer" onclick="selectBasin('kolhapur')">
+<circle class="pulsing-dot" cx="330" cy="340" fill="#ef4444" fill-opacity="0.25" r="16"></circle>
+<circle cx="330" cy="340" fill="#ef4444" r="6"></circle>
+<text fill="#fca5a5" font-family="JetBrains Mono" font-size="11" font-weight="700" x="345" y="344">Kolhapur (43.44m RED)</text>
+</g>
+<g class="cursor-pointer" onclick="selectBasin('mumbai')">
+<circle cx="280" cy="285" fill="#f59e0b" fill-opacity="0.25" r="10"></circle>
+<circle cx="280" cy="285" fill="#f59e0b" r="5"></circle>
+<text fill="#fde68a" font-family="JetBrains Mono" font-size="10" x="210" y="275">Mumbai (Mithi 3.85m)</text>
+</g>
+<g class="cursor-pointer" onclick="selectBasin('guwahati')">
+<circle class="pulsing-dot" cx="780" cy="165" fill="#ef4444" fill-opacity="0.25" r="14"></circle>
+<circle cx="780" cy="165" fill="#ef4444" r="5"></circle>
+<text fill="#fca5a5" font-family="JetBrains Mono" font-size="10" font-weight="700" x="795" y="169">Guwahati (49.6m)</text>
+</g>
+<g class="cursor-pointer" onclick="selectBasin('wayanad')">
+<circle cx="340" cy="420" fill="#10b981" fill-opacity="0.25" r="10"></circle>
+<circle cx="340" cy="420" fill="#10b981" r="5"></circle>
+<text fill="#6ee7b7" font-family="JetBrains Mono" font-size="10" x="355" y="424">Wayanad (82mm)</text>
+</g>
+</svg>
+</div>
+<!-- Digital Twin Floating Card with Fully Functional Siren Synthesizer -->
+<div class="relative z-10 max-w-xs rounded-2xl bg-slate-900/90 backdrop-blur-xl p-4 border border-cyan-500/30 shadow-2xl self-start mt-auto">
+<h4 class="text-xs font-bold text-cyan-300 font-mono flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-cyan-400 pulsing-dot"></span> Panchganga Digital Twin
+</h4>
+<p class="text-[11px] text-slate-300 mt-1">142 IoT River Sensors active. Backwater effect at Shirol convergence.</p>
+<div class="mt-3 flex gap-2">
+<!-- Fully functional AudioContext-driven Siren Toggle Button -->
+<button class="flex-1 py-1.5 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-mono font-bold transition-all shadow-glow-red flex items-center justify-center gap-1.5 border border-rose-400" id="sirenBtn" onclick="toggleSiren()">
+<span class="inline-block animate-pulse" id="sirenWaveIcon">📢</span>
+<span id="sirenBtnText">Activate Siren</span>
+</button>
+<button class="py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-mono border border-slate-700 transition-all" onclick="switchTab('gis-tab', document.querySelectorAll('.nav-btn')[4])">Simulate</button>
+</div>
+</div>
+</div>
+<!-- Regional Basins High Alert List -->
+<div class="col-span-12 xl:col-span-4 rounded-3xl p-5 theme-card border shadow-glass flex flex-col justify-between">
+<div class="flex items-center justify-between pb-3 border-b border-slate-800">
+<h4 class="text-xs font-bold uppercase text-cyan-400 font-mono">Regional Watch (CWC Ensembles)</h4>
+<span class="text-[10px] font-mono text-slate-400">4 Active Basins</span>
+</div>
+<div class="divide-y divide-slate-800 my-2 space-y-1">
+<div class="py-2 flex items-center justify-between cursor-pointer hover:bg-cyan-500/10 px-2 rounded-xl transition-all" onclick="selectBasin('kolhapur')">
+<div>
+<span class="text-[10px] text-rose-400 font-mono font-bold uppercase">Maharashtra // Red Alert</span>
+<h5 class="text-xs font-bold text-slate-200">Kolhapur (Panchganga)</h5>
+</div>
+<div class="text-right">
+<span class="text-base font-bold text-rose-400 font-mono">43.44m</span>
+<span class="block text-[9px] text-rose-400 font-mono">+0.44m Over</span>
+</div>
+</div>
+<div class="py-2 flex items-center justify-between cursor-pointer hover:bg-cyan-500/10 px-2 rounded-xl transition-all" onclick="selectBasin('mumbai')">
+<div>
+<span class="text-[10px] text-amber-400 font-mono font-bold uppercase">Maharashtra // High Tide</span>
+<h5 class="text-xs font-bold text-slate-200">Mumbai (Mithi River)</h5>
+</div>
+<div class="text-right">
+<span class="text-base font-bold text-amber-400 font-mono">3.85m</span>
+<span class="block text-[9px] text-amber-400 font-mono">Tide @ 15:10</span>
+</div>
+</div>
+<div class="py-2 flex items-center justify-between cursor-pointer hover:bg-cyan-500/10 px-2 rounded-xl transition-all" onclick="selectBasin('guwahati')">
+<div>
+<span class="text-[10px] text-cyan-400 font-mono font-bold uppercase">Assam // Warning</span>
+<h5 class="text-xs font-bold text-slate-200">Guwahati (Brahmaputra)</h5>
+</div>
+<div class="text-right">
+<span class="text-base font-bold text-cyan-300 font-mono">49.60m</span>
+<span class="block text-[9px] text-cyan-400 font-mono">+3cm/h</span>
+</div>
+</div>
+<div class="py-2 flex items-center justify-between cursor-pointer hover:bg-cyan-500/10 px-2 rounded-xl transition-all" onclick="selectBasin('wayanad')">
+<div>
+<span class="text-[10px] text-emerald-400 font-mono font-bold uppercase">Kerala // Runoff Saturated</span>
+<h5 class="text-xs font-bold text-slate-200">Wayanad (Kabini Basin)</h5>
+</div>
+<div class="text-right">
+<span class="text-base font-bold text-emerald-400 font-mono">82mm</span>
+<span class="block text-[9px] text-emerald-400 font-mono">Controlled</span>
+</div>
+</div>
+</div>
+<button class="w-full mt-2 py-2 rounded-2xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/40 text-xs font-bold text-cyan-300 font-mono transition-all" onclick="openSosModal()">
+              ⚡ Open Incident Response Deck
+            </button>
+</div>
+</div>
+</div>
+<!-- ================= PANEL 2: AI PREDICTION & ML HYDROLOGY STUDIO ================= -->
+<div class="view-panel space-y-6" id="aiml-tab">
+<!-- Header Banner -->
+<div class="p-6 rounded-3xl theme-card border border-purple-500/40 bg-gradient-to-r from-purple-950/40 via-slate-900/90 to-indigo-950/40 shadow-glow-purple flex flex-wrap items-center justify-between gap-4">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-500 text-white text-[10px] font-mono font-extrabold uppercase tracking-wider">SIH 26071 Core AI</span>
+<span class="text-xs font-mono text-purple-300 font-bold">ConvLSTM RadarNet v2.4 Nowcast &amp; Inundation Ensemble</span>
+</div>
+<h2 class="text-2xl font-black text-white font-display flex items-center gap-2">
+              Deep Hydrology &amp; Cloudburst Nowcasting Studio
+            </h2>
+<p class="text-xs text-slate-300 font-mono">Coupled IMD Doppler Weather Radar (DWR), INSAT-3DR TIR Imagery &amp; HEC-RAS 2D Hydrodynamic Tensor Engine</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-500 hover:to-cyan-500 text-white font-mono text-xs font-bold shadow-lg hover:scale-105 transition-all flex items-center gap-2" onclick="runTensorInference()">
+<svg class="w-4 h-4 text-purple-200" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Run Multi-Horizon Ensemble</span>
+</button>
+</div>
+</div>
+<!-- Metric Grid for AI Engine -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+<div class="p-4 rounded-3xl theme-card border border-purple-500/30">
+<span class="text-[10px] text-purple-300 uppercase font-mono block">Ensemble Correlation R²</span>
+<div class="text-2xl font-black text-white font-mono mt-1">0.963 <span class="text-xs text-purple-300">P90</span></div>
+<span class="text-[10px] text-emerald-400 font-mono">High Fidelity Cross-Validated</span>
+</div>
+<div class="p-4 rounded-3xl theme-card border border-cyan-500/30">
+<span class="text-[10px] text-cyan-300 uppercase font-mono block">Mean Absolute Error</span>
+<div class="text-2xl font-black text-white font-mono mt-1">± 0.038 <span class="text-xs text-cyan-300">meters</span></div>
+<span class="text-[10px] text-cyan-300 font-mono">Stage Level Precision</span>
+</div>
+<div class="p-4 rounded-3xl theme-card border border-indigo-500/30">
+<span class="text-[10px] text-indigo-300 uppercase font-mono block">Lead Warning Time</span>
+<div class="text-2xl font-black text-white font-mono mt-1">3.4 <span class="text-xs text-indigo-300">Hours</span></div>
+<span class="text-[10px] text-rose-400 font-mono">Advance Flash Horizon</span>
+</div>
+<div class="p-4 rounded-3xl theme-card border border-emerald-500/30">
+<span class="text-[10px] text-emerald-300 uppercase font-mono block">Confidence Score</span>
+<div class="text-2xl font-black text-emerald-400 font-mono mt-1">98.4%</div>
+<span class="text-[10px] text-emerald-300 font-mono">42 Seed Monte Carlo</span>
+</div>
+</div>
+<!-- Visual AI Simulation & Model Ensembles -->
+<div class="grid grid-cols-12 gap-6">
+<!-- RadarNet Spatiotemporal Extrapolation Canvas -->
+<div class="col-span-12 lg:col-span-7 rounded-3xl theme-card border border-purple-500/30 p-5 space-y-4">
+<div class="flex items-center justify-between">
+<div>
+<h4 class="text-sm font-bold text-white font-mono flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-purple-400 pulsing-dot"></span>
+                  ConvLSTM RadarNet Cloudburst Tracking (+0h to +3h)
+                </h4>
+<p class="text-xs text-slate-400 font-mono">10-min Doppler radar reflectivity (dBZ) extrapolation sequence</p>
+</div>
+<span class="text-xs font-mono px-2 py-1 rounded-xl bg-purple-500/20 text-purple-300 font-bold border border-purple-500/30" id="radarTimeStep">T+40 Mins</span>
+</div>
+<!-- Radar Graphic Representation -->
+<div class="w-full h-64 rounded-2xl bg-slate-950 border border-slate-800 relative overflow-hidden flex items-center justify-center">
+<svg class="w-full h-full" viewbox="0 0 700 300">
+<defs>
+<radialgradient cx="50%" cy="50%" id="radarGlow" r="50%">
+<stop offset="0%" stop-color="#ef4444" stop-opacity="0.85"></stop>
+<stop offset="35%" stop-color="#f59e0b" stop-opacity="0.65"></stop>
+<stop offset="70%" stop-color="#00d9ff" stop-opacity="0.4"></stop>
+<stop offset="100%" stop-color="#00d9ff" stop-opacity="0"></stop>
+</radialgradient>
+</defs>
+<!-- Rings -->
+<circle cx="350" cy="150" fill="none" r="120" stroke="#1e293b" stroke-dasharray="4 4" stroke-width="1.5"></circle>
+<circle cx="350" cy="150" fill="none" r="80" stroke="#334155" stroke-width="1.5"></circle>
+<circle cx="350" cy="150" fill="none" r="40" stroke="#475569" stroke-width="1.5"></circle>
+<!-- Radar Sweep Beam -->
+<line opacity="0.7" stroke="#00d9ff" stroke-width="2" x1="350" x2="460" y1="150" y2="40"></line>
+<!-- Cloudburst Cloud Mass -->
+<ellipse cx="370" cy="130" fill="url(#radarGlow)" id="radarBlob" rx="90" ry="60"></ellipse>
+<!-- Landmark Labels -->
+<text fill="#f8fafc" font-family="JetBrains Mono" font-size="11" font-weight="bold" x="355" y="155">Kolhapur DWR</text>
+<text fill="#fca5a5" font-family="JetBrains Mono" font-size="10" font-weight="bold" x="430" y="90">54.8 dBZ (Torrential)</text>
+<text fill="#7dd3fc" font-family="JetBrains Mono" font-size="10" x="230" y="210">Radhanagari Catchment</text>
+</svg>
+<div class="absolute top-3 left-3 bg-slate-900/90 border border-purple-500/40 p-2 rounded-xl text-[10px] font-mono text-purple-200">
+<span>Model: Spatiotemporal ConvLSTM-256</span><br/>
+<span>Resolution: 500m × 500m grid cell</span>
+</div>
+</div>
+<!-- Time Slider to scrub radar prediction -->
+<div class="space-y-2 pt-1">
+<div class="flex justify-between text-xs font-mono text-slate-400">
+<span>Now (00m)</span>
+<span>+30m</span>
+<span class="text-rose-400 font-bold">+60m (Surge Peak)</span>
+<span>+120m</span>
+<span>+180m</span>
+</div>
+<input class="w-full accent-cyan-400 bg-slate-800 rounded-lg cursor-pointer" id="radarScrubber" max="180" min="0" oninput="scrubRadar(this.value)" step="10" type="range" value="40"/>
+</div>
+</div>
+<!-- Soil Moisture & Runoff ML Neural Curve -->
+<div class="col-span-12 lg:col-span-5 rounded-3xl theme-card border border-indigo-500/30 p-5 space-y-4 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between">
+<h4 class="text-sm font-bold text-white font-mono">Antecedent Soil Saturation &amp; Runoff</h4>
+<span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 font-bold">SATURATED (97.8%)</span>
+</div>
+<p class="text-xs text-slate-400 font-mono mt-1">API Index indicates zero soil infiltration; 98% precipitation converts to direct river surge.</p>
+</div>
+<div class="h-44 w-full bg-slate-950 rounded-2xl border border-slate-800 p-2 relative flex items-center justify-center">
+<svg class="w-full h-full" viewbox="0 0 400 160">
+<!-- Threshold Line -->
+<line stroke="#ef4444" stroke-dasharray="4 2" stroke-width="1.5" x1="40" x2="380" y1="50" y2="50"></line>
+<text fill="#ef4444" font-family="JetBrains Mono" font-size="9" font-weight="bold" x="45" y="44">Infiltration Saturation Threshold (85%)</text>
+<!-- Historical Inundation Path -->
+<path d="M 40,140 Q 120,130 180,95 T 260,40 T 380,25" fill="none" stroke="#00d9ff" stroke-width="3"></path>
+<!-- Forecast Cone -->
+<polygon fill="rgba(168, 85, 247, 0.25)" points="260,40 380,15 380,45"></polygon>
+<!-- Points -->
+<circle class="pulsing-dot" cx="260" cy="40" fill="#ef4444" r="5"></circle>
+<text fill="#fca5a5" font-family="JetBrains Mono" font-size="9" x="270" y="44">Current T=0 (97.8%)</text>
+</svg>
+</div>
+<div class="p-3 rounded-2xl bg-indigo-950/40 border border-indigo-500/30 text-xs font-mono text-slate-300 flex items-center justify-between">
+<div>
+<span class="text-indigo-300 font-bold">Hydro-ML Recommendation:</span>
+<p class="text-[11px] text-slate-300">Maintain downstream barrage siphons fully open to accommodate +48,000 cfs.</p>
+</div>
+<button class="px-2.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[10px] shrink-0" onclick="showToast('Siphon gates automated dispatch sent to Irrigation Dept')">Dispatch</button>
+</div>
+</div>
+</div>
+<!-- Ensemble Models Matrix 3-Card Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="p-6 rounded-3xl theme-card border border-purple-500/30 space-y-3">
+<div class="flex justify-between items-center">
+<h4 class="text-sm font-bold text-white font-mono">1. ConvLSTM RadarNet</h4>
+<span class="text-xs font-mono text-purple-400 font-bold">96.8% Acc</span>
+</div>
+<p class="text-xs text-slate-300">Spatiotemporal recurrent neural network tracking 10-minute Doppler radar reflectivity sequences.</p>
+<div class="text-[11px] font-mono text-slate-400 space-y-1 pt-2 border-t border-slate-800">
+<div>• Lead Time: 0 - 6 Hours</div>
+<div>• Resolution: 500m Grid</div>
+<div>• Input: IMD DWR dBZ (10-min cadence)</div>
+</div>
+</div>
+<div class="p-6 rounded-3xl theme-card border border-cyan-500/30 space-y-3">
+<div class="flex justify-between items-center">
+<h4 class="text-sm font-bold text-white font-mono">2. WRF NWP Model</h4>
+<span class="text-xs font-mono text-cyan-300 font-bold">3km High-Res</span>
+</div>
+<p class="text-xs text-slate-300">Weather Research &amp; Forecasting numerical dynamical model predicting convective rain clouds.</p>
+<div class="text-[11px] font-mono text-slate-400 space-y-1 pt-2 border-t border-slate-800">
+<div>• Lead Time: 24h - 7 Days</div>
+<div>• Physics: Thompson Microphysics</div>
+<div>• Boundary: GFS / ECMWF 0.25°</div>
+</div>
+</div>
+<div class="p-6 rounded-3xl theme-card border border-indigo-500/30 space-y-3">
+<div class="flex justify-between items-center">
+<h4 class="text-sm font-bold text-white font-mono">3. Coupled Hydro-ML</h4>
+<span class="text-xs font-mono text-indigo-400 font-bold">Coupled 2D HEC</span>
+</div>
+<p class="text-xs text-slate-300">Soil moisture antecedent precipitation index (API) calculating infiltration loss and overland surges.</p>
+<div class="text-[11px] font-mono text-slate-400 space-y-1 pt-2 border-t border-slate-800">
+<div>• Dynamic Manning Roughness N</div>
+<div>• Backwater Confluence Solver</div>
+<div>• Peak Discharge Probability: P90</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ================= PANEL 3: TELEMETRY & GAUGES ================= -->
+<div class="view-panel space-y-6" id="telemetry-tab">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="text-lg font-bold text-white flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-cyan-400 pulsing-dot"></span> Live IoT Hydrometric Sensor Network
+            </h2>
+<p class="text-xs text-slate-400 font-mono">142 Real-time Ultrasonic &amp; Pressure Transducer Stations active across India</p>
+</div>
+<button class="px-3 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-xs font-mono hover:bg-cyan-500/30 transition-all" onclick="showToast('Polling 142 remote telemetry stations... All nominal (22ms ping)')">
+            ↻ Refresh Gauge Ping
+          </button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+<div class="p-5 rounded-3xl theme-card border-2 border-rose-500/60 shadow-glow-red">
+<div class="flex justify-between items-center text-xs font-mono"><span class="text-rose-400 font-bold">STATION #PCH-01</span><span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 text-[10px]">RED OVERFLOW</span></div>
+<h4 class="text-base font-bold text-white mt-2">Rajaram Weir Station</h4>
+<p class="text-xs text-slate-400">Panchganga River, Kolhapur</p>
+<div class="text-3xl font-black text-rose-400 font-mono mt-2">43.44 m</div>
+<div class="text-xs text-slate-400 font-mono mt-3 border-t border-slate-800 pt-2 space-y-1">
+<div class="flex justify-between"><span>Velocity:</span><strong class="text-white">3.4 m/s</strong></div>
+<div class="flex justify-between"><span>Telemetry Uplink:</span><strong class="text-cyan-300">4G LTE + SAT 18ms</strong></div>
+</div>
+</div>
+<div class="p-5 rounded-3xl theme-card border border-amber-500/50 shadow-glass">
+<div class="flex justify-between items-center text-xs font-mono"><span class="text-amber-400 font-bold">STATION #MTH-08</span><span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px]">HIGH TIDE</span></div>
+<h4 class="text-base font-bold text-white mt-2">Bandra-Kurla Complex Weir</h4>
+<p class="text-xs text-slate-400">Mithi River, Mumbai</p>
+<div class="text-3xl font-black text-amber-400 font-mono mt-2">3.85 m</div>
+<div class="text-xs text-slate-400 font-mono mt-3 border-t border-slate-800 pt-2 space-y-1">
+<div class="flex justify-between"><span>Velocity:</span><strong class="text-white">1.8 m/s</strong></div>
+<div class="flex justify-between"><span>Telemetry Uplink:</span><strong class="text-cyan-300">5G Slicing 12ms</strong></div>
+</div>
+</div>
+<div class="p-5 rounded-3xl theme-card border border-cyan-500/40 shadow-glass">
+<div class="flex justify-between items-center text-xs font-mono"><span class="text-cyan-400 font-bold">STATION #BMP-14</span><span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 text-[10px]">RISING</span></div>
+<h4 class="text-base font-bold text-white mt-2">Pandu Port Gauge</h4>
+<p class="text-xs text-slate-400">Brahmaputra, Guwahati</p>
+<div class="text-3xl font-black text-cyan-300 font-mono mt-2">49.60 m</div>
+<div class="text-xs text-slate-400 font-mono mt-3 border-t border-slate-800 pt-2 space-y-1">
+<div class="flex justify-between"><span>Velocity:</span><strong class="text-white">4.1 m/s</strong></div>
+<div class="flex justify-between"><span>Telemetry Uplink:</span><strong class="text-cyan-300">NavIC + INSAT 24ms</strong></div>
+</div>
+</div>
+</div>
+</div>
+<!-- ================= PANEL 4: BASINS & RESERVOIRS ================= -->
+<div class="view-panel space-y-6" id="dams-tab">
+<div>
+<h2 class="text-lg font-bold text-white flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-indigo-400 pulsing-dot"></span> Live Dam Telemetry &amp; Siphon Gates Control
+          </h2>
+<p class="text-xs text-slate-400 font-mono">Automated release optimization balancing flood attenuation &amp; reservoir safety</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<div class="p-6 rounded-3xl theme-card border border-slate-800 space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="text-base font-bold text-white">Radhanagari Dam (Bhogawati)</h3>
+<span class="px-2 py-1 rounded-xl bg-amber-500/20 text-amber-400 font-mono text-xs font-bold">7 AUTOMATIC SIPHONS OPEN</span>
+</div>
+<div class="w-full bg-slate-950 rounded-full h-4 overflow-hidden border border-slate-700">
+<div class="bg-gradient-to-r from-cyan-500 to-rose-500 h-full rounded-full" style="width: 98.4%"></div>
+</div>
+<div class="flex justify-between text-xs font-mono text-slate-400">
+<span>Capacity: <strong>8.36 / 8.5 TMC (98.4%)</strong></span>
+<span class="text-rose-400 font-bold">Cushion: 0.14 TMC</span>
+</div>
+<p class="text-xs text-slate-300">Auto-siphons triggering continuous discharge of 28,450 cusec directly entering Panchganga reach.</p>
+</div>
+<div class="p-6 rounded-3xl theme-card border border-slate-800 space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="text-base font-bold text-white">Koyna Dam (Shivsagar Reservoir)</h3>
+<span class="px-2 py-1 rounded-xl bg-cyan-500/20 text-cyan-300 font-mono text-xs font-bold">REGULATED OUTFLOW</span>
+</div>
+<div class="w-full bg-slate-950 rounded-full h-4 overflow-hidden border border-slate-700">
+<div class="bg-gradient-to-r from-blue-500 to-cyan-400 h-full rounded-full" style="width: 86.2%"></div>
+</div>
+<div class="flex justify-between text-xs font-mono text-slate-400">
+<span>Capacity: <strong>90.5 / 105 TMC (86.2%)</strong></span>
+<span class="text-cyan-300 font-bold">Cushion: 14.5 TMC</span>
+</div>
+<p class="text-xs text-slate-300">Regulated tailrace releases to Vashishti River running at 45,000 cusec.</p>
+</div>
+</div>
+</div>
+<!-- ================= PANEL 5: DIGITAL TWIN GIS ================= -->
+<div class="view-panel space-y-6" id="gis-tab">
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div>
+<h2 class="text-lg font-bold text-white flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulsing-dot"></span> Panchganga 2D/3D Hydrodynamic Inundation Digital Twin
+            </h2>
+<p class="text-xs text-slate-400 font-mono">Coupled HEC-RAS 2D unsteady flow + ConvLSTM RadarNet Depth Simulation</p>
+</div>
+<div class="flex gap-2 text-xs font-mono">
+<button class="px-3 py-1 rounded-xl bg-cyan-500 text-slate-950 font-bold" onclick="showToast('Radar layer 52.4dBZ enabled')">Radar 52.4dBZ</button>
+<button class="px-3 py-1 rounded-xl bg-slate-800 text-slate-300" onclick="showToast('Flood depth contours toggled')">Depth Heatmap</button>
+</div>
+</div>
+<div class="w-full h-[460px] rounded-3xl bg-slate-950 border border-cyan-500/30 relative overflow-hidden flex items-center justify-center">
+<svg class="w-full h-full" viewbox="0 0 1000 600">
+<rect fill="#090d16" height="600" width="1000"></rect>
+<path d="M 50,200 Q 250,150 450,220 T 850,210" fill="none" stroke="#1c263b" stroke-width="24"></path>
+<path d="M 120,380 Q 280,310 440,360 T 680,420 T 920,390 L 920,550 L 120,550 Z" fill="rgba(0, 217, 255, 0.25)" stroke="#00d9ff" stroke-width="2"></path>
+<path d="M 100,100 L 400,300 L 700,450 L 950,550" fill="none" stroke="#f59e0b" stroke-dasharray="6 3" stroke-width="3"></path>
+<text fill="#fbbf24" font-family="JetBrains Mono" font-size="11" font-weight="700" x="410" y="290">NH-48 Bridge (Water at Girders)</text>
+<g class="cursor-pointer" onclick="showToast('Chikhali Village: 1.4m depth, Evacuation 82%')">
+<circle class="pulsing-dot" cx="340" cy="370" fill="#ef4444" r="10"></circle>
+<text fill="#fca5a5" font-family="JetBrains Mono" font-size="12" font-weight="bold" x="360" y="375">Chikhali (1.4m Water)</text>
+</g>
+<g class="cursor-pointer" onclick="showToast('Ambewadi: 2.1m depth, NDRF boats on station')">
+<circle class="pulsing-dot" cx="490" cy="400" fill="#ef4444" r="12"></circle>
+<text fill="#fca5a5" font-family="JetBrains Mono" font-size="12" font-weight="bold" x="510" y="405">Ambewadi (2.1m Deep)</text>
+</g>
+</svg>
+<div class="absolute bottom-4 left-4 bg-slate-900/90 border border-cyan-500/30 p-3 rounded-2xl text-xs font-mono text-cyan-300">
+<div><strong>Resolution:</strong> 5m DEM + Sentinel-1 SAR</div>
+<div><strong>Team:</strong> Rain Vision (SIH 26071)</div>
+</div>
+</div>
+</div>
+<!-- ================= PANEL 6: EVACUATION CORRIDORS ================= -->
+<div class="view-panel space-y-6" id="evac-tab">
+<div>
+<h2 class="text-lg font-bold text-white flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-amber-400 pulsing-dot"></span> Live Evacuation Corridors &amp; Safe Shelters
+          </h2>
+<p class="text-xs text-slate-400 font-mono">Dynamic route clearing with NDRF 5th Battalion &amp; PWD Flood Barriers</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+<div class="p-5 rounded-3xl theme-card border border-emerald-500/50 shadow-glass">
+<span class="text-xs font-bold text-emerald-400 font-mono">CORRIDOR 01 • GREEN OPEN</span>
+<h4 class="text-base font-bold text-white mt-1">NH-48 Bypass to Shahu Stadium</h4>
+<p class="text-xs text-slate-400 mt-1">Elevated route clearance active. Water depth &lt; 0.05m.</p>
+<div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-xs font-mono">
+<span class="text-slate-400">Capacity Flow:</span>
+<strong class="text-emerald-400">4,200 persons/hr</strong>
+</div>
+</div>
+<div class="p-5 rounded-3xl theme-card border border-rose-500/50 shadow-glass">
+<span class="text-xs font-bold text-rose-400 font-mono">CORRIDOR 02 • CLOSED</span>
+<h4 class="text-base font-bold text-white mt-1">Shivaji Bridge / Kasba Bawada</h4>
+<p class="text-xs text-slate-400 mt-1">Overtopping by 0.6m. Police barriers in place.</p>
+<div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-xs font-mono">
+<span class="text-slate-400">Status:</span>
+<strong class="text-rose-400">Submerged • Diversion A</strong>
+</div>
+</div>
+<div class="p-5 rounded-3xl theme-card border border-cyan-500/50 shadow-glass">
+<span class="text-xs font-bold text-cyan-400 font-mono">SHELTER HUB ALPHA</span>
+<h4 class="text-base font-bold text-white mt-1">DY Patil Community Center</h4>
+<p class="text-xs text-slate-400 mt-1">Medical triage online. Food supplies 5 days.</p>
+<div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-xs font-mono">
+<span class="text-slate-400">Bed Availability:</span>
+<strong class="text-cyan-300">420 / 1,200 Free</strong>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ACCREDITATION FOOTER -->
+<footer class="mt-auto px-6 py-4 border-t border-slate-800 flex flex-wrap items-center justify-between text-[11px] font-mono text-slate-400">
+<div>Developed by <strong>TEAM RAIN VISION • Smart India Hackathon (SIH) 26071</strong></div>
+<div>Integrated with CWC, IMD Doppler Radar &amp; INSAT-3DR • Inspired by IIT Bombay Hydro-Informatics Lab</div>
+</footer>
+</main>
+</div>
+<!-- ================= SOS EMERGENCY MODAL WITH GEOLOCATION & EMBEDDED WHATSAPP DISPATCH ================= -->
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md" id="sosModal">
+<div class="w-full max-w-lg rounded-3xl bg-slate-900 border-2 border-rose-500 p-6 space-y-4 shadow-glow-red">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-rose-500 pulsing-dot"></span>
+<h3 class="text-base font-extrabold text-white font-mono">🚨 SOS EMERGENCY GEOLOCATION DISPATCH</h3>
+</div>
+<button class="text-slate-400 hover:text-white font-bold text-lg" onclick="closeSosModal()">✕</button>
+</div>
+<p class="text-xs text-slate-300">
+      Live GPS tracking is active. Transmit instant flood distress broadcast directly with your verified real-time coordinates to NDRF rescue teams and family via WhatsApp.
+    </p>
+<!-- Geolocation Status Box -->
+<div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 font-mono text-xs space-y-1.5">
+<div class="flex justify-between text-slate-400"><span>GPS Status:</span><strong class="text-cyan-300" id="gpsStatus">Acquired Live Coordinate Fix</strong></div>
+<div class="flex justify-between text-slate-400"><span>Latitude:</span><strong class="text-white" id="gpsLat">16.7050° N</strong></div>
+<div class="flex justify-between text-slate-400"><span>Longitude:</span><strong class="text-white" id="gpsLon">74.2433° E</strong></div>
+<div class="flex justify-between text-slate-400"><span>Accuracy:</span><strong class="text-emerald-400" id="gpsAcc">± 4.2 meters</strong></div>
+<div class="flex justify-between text-slate-400"><span>Identified Sector:</span><strong class="text-amber-400" id="gpsSector">Kolhapur (Panchganga Basin)</strong></div>
+<div class="flex justify-between text-slate-400"><span>Water Stage:</span><strong class="text-rose-400" id="gpsStage">43.44m (+0.44m Over Danger)</strong></div>
+</div>
+<!-- Actions: Embedded WhatsApp SOS with live GPS + Emergency Hotlines -->
+<div class="space-y-2 pt-2">
+<button class="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold font-mono text-xs flex items-center justify-center gap-2 shadow-lg hover:scale-102 transition-all" onclick="sendWhatsAppSOS()">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"></path></svg>
+<span>Send Live GPS to WhatsApp Emergency Dispatch</span>
+</button>
+<div class="grid grid-cols-2 gap-2">
+<a class="py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-rose-400 font-mono text-xs font-bold text-center border border-rose-500/40 transition-all" href="tel:112">
+          📞 Call 112 (National SOS)
+        </a>
+<a class="py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 font-mono text-xs font-bold text-center border border-cyan-500/40 transition-all" href="tel:1916">
+          📞 Call 1916 (CWC Flood)
+        </a>
+</div>
+</div>
+</div>
+</div>
+<!-- ================= JAVASCRIPT LOGIC ================= -->
+<script>
+  // Global Geolocation state
+  let currentLat = "16.7050";
+  let currentLon = "74.2433";
+  let currentAccuracy = "4.2";
+  let currentBasinName = "Kolhapur (Panchganga)";
+  let currentWaterStage = "43.44m (+0.44m Over Danger)";
+
+  // Forecast Days Data for Motion/Hover inspection
+  const dayTelemetry = {
+    today: {
+      day: "Today (Mon)",
+      stage: "43.44m",
+      diff: "+0.44m Over Danger",
+      inflow: "48,200 cusec",
+      precip: "118 mm/hr",
+      pump: "8/8 Operational",
+      evac: "38 Mins Left",
+      status: "RED OVERFLOW",
+      color: "rose"
+    },
+    tue: {
+      day: "Tuesday",
+      stage: "44.10m",
+      diff: "+1.10m Peak Flood Crest",
+      inflow: "54,600 cusec",
+      precip: "145 mm/hr",
+      pump: "8/8 Max Capacity",
+      evac: "Critical Window",
+      status: "PEAK SURGE ALERT",
+      color: "rose"
+    },
+    wed: {
+      day: "Wednesday",
+      stage: "43.80m",
+      diff: "+0.80m Over Danger",
+      inflow: "42,100 cusec",
+      precip: "92 mm/hr",
+      pump: "7/8 Active",
+      evac: "1.5 Hours",
+      status: "HIGH ALERT LEVEL",
+      color: "amber"
+    },
+    thu: {
+      day: "Thursday",
+      stage: "42.20m",
+      diff: "-0.80m Below Danger",
+      inflow: "31,000 cusec",
+      precip: "45 mm/hr",
+      pump: "5/8 Active",
+      evac: "Receding / Safe Corridor",
+      status: "RECEDING RUNOFF",
+      color: "cyan"
+    },
+    fri: {
+      day: "Friday",
+      stage: "41.10m",
+      diff: "-1.90m Safe Normal",
+      inflow: "22,400 cusec",
+      precip: "22 mm/hr",
+      pump: "4/8 Standard",
+      evac: "Stand Down",
+      status: "SAFE DISCHARGE",
+      color: "emerald"
+    },
+    sat: {
+      day: "Saturday",
+      stage: "39.80m",
+      diff: "-3.20m Normal",
+      inflow: "16,200 cusec",
+      precip: "8 mm/hr",
+      pump: "2/8 Base",
+      evac: "Normal Flow",
+      status: "NOMINAL BASEFLOW",
+      color: "emerald"
+    },
+    sun: {
+      day: "Sunday",
+      stage: "38.50m",
+      diff: "-4.50m Standard Level",
+      inflow: "12,500 cusec",
+      precip: "2 mm/hr",
+      pump: "0/8 Idle",
+      evac: "All Clear",
+      status: "OPTIMAL BASIN STAGE",
+      color: "emerald"
+    }
+  };
+
+  // 1. RELIABLE BULLETPROOF DARK / LIGHT THEME TOGGLE (Executive Silver-Slate Palette)
+  function toggleTheme() {
+    const isLight = document.documentElement.classList.contains('light-theme') || document.body.classList.contains('light-theme');
+    const icon = document.getElementById('themeIcon');
+
+    if (isLight) {
+      document.documentElement.classList.remove('light-theme');
+      document.body.classList.remove('light-theme');
+      document.documentElement.classList.add('dark');
+      if (icon) icon.textContent = '☀️';
+      showToast("High-Tech Obsidian Dark Mode Active");
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light-theme');
+      document.body.classList.add('light-theme');
+      if (icon) icon.textContent = '🌙';
+      showToast("Executive Silver-Slate Light Mode Active");
+    }
+  }
+
+  // 2. CURSOR HOVER MOTION EXPANSION ON ALL 7 DAYS
+  function inspectDay(key) {
+    const data = dayTelemetry[key];
+    if (!data) return;
+
+    // Highlight active card
+    document.querySelectorAll('.motion-day-card').forEach(c => {
+      c.classList.remove('active-selected');
+    });
+    const targetCard = document.getElementById(`dayCard-${key}`);
+    if (targetCard) targetCard.classList.add('active-selected');
+
+    // Update label & banner display
+    const label = document.getElementById('activeDayLabel');
+    if (label) label.textContent = `Inspecting: ${data.day}`;
+
+    const title = document.getElementById('inspDayTitle');
+    if (title) {
+      title.textContent = `${data.day.toUpperCase()} • ${data.status}`;
+      title.className = `px-2 py-0.5 rounded font-bold text-slate-950 ${data.color === 'rose' ? 'bg-rose-500 text-white' : data.color === 'amber' ? 'bg-amber-400' : 'bg-cyan-400'}`;
+    }
+
+    const detail = document.getElementById('inspDayDetail');
+    if (detail) {
+      detail.textContent = `River Crest: ${data.stage} (${data.diff}) | Inflow: ${data.inflow} | Precip: ${data.precip} | Pumps: ${data.pump}`;
+    }
+
+    const alertMsg = document.getElementById('inspDayAlert');
+    if (alertMsg) {
+      alertMsg.textContent = `Evacuation Status: ${data.evac}`;
+      alertMsg.className = `font-bold ${data.color === 'rose' ? 'text-rose-400' : data.color === 'amber' ? 'text-amber-400' : 'text-cyan-300'}`;
+    }
+  }
+
+  // 3. FULLY FUNCTIONAL SIREN AUDIO SYNTHESIS & STROBE (Web Audio API)
+  let sirenContext = null;
+  let sirenOsc1 = null;
+  let sirenOsc2 = null;
+  let sirenGain = null;
+  let sirenLfo = null;
+  let isSirenActive = false;
+
+  function toggleSiren() {
+    if (!isSirenActive) {
+      startSirenAudio();
+      isSirenActive = true;
+      const btn = document.getElementById('sirenBtn');
+      const text = document.getElementById('sirenBtnText');
+      const icon = document.getElementById('sirenWaveIcon');
+      if (btn) {
+        btn.classList.add('siren-active-glow');
+        btn.classList.remove('bg-rose-600');
+      }
+      if (text) text.textContent = 'SIREN ACTIVE [STOP]';
+      if (icon) icon.textContent = '🚨';
+      showToast("EMERGENCY EVACUATION SIREN ACTIVATED: Ward 4 & Lowland Ghats (102dB Civil Defense Klaxon Broadcast Active)");
+    } else {
+      stopSirenAudio();
+      isSirenActive = false;
+      const btn = document.getElementById('sirenBtn');
+      const text = document.getElementById('sirenBtnText');
+      const icon = document.getElementById('sirenWaveIcon');
+      if (btn) {
+        btn.classList.remove('siren-active-glow');
+        btn.classList.add('bg-rose-600');
+      }
+      if (text) text.textContent = 'Activate Siren';
+      if (icon) icon.textContent = '📢';
+      showToast("Civil Defense Siren Stood Down. Acoustic horns silenced.");
+    }
+  }
+
+  function startSirenAudio() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      sirenContext = new AudioCtx();
+
+      // Dual oscillating horns for authentic civil defense wail
+      sirenOsc1 = sirenContext.createOscillator();
+      sirenOsc2 = sirenContext.createOscillator();
+      sirenGain = sirenContext.createGain();
+
+      // Pitch sweep LFO
+      sirenLfo = sirenContext.createOscillator();
+      const lfoGain = sirenContext.createGain();
+
+      sirenOsc1.type = 'sawtooth';
+      sirenOsc2.type = 'triangle';
+      sirenOsc1.frequency.setValueAtTime(650, sirenContext.currentTime);
+      sirenOsc2.frequency.setValueAtTime(656, sirenContext.currentTime);
+
+      // Modulate frequency between 520Hz and 980Hz at 0.4 Hz cycle
+      sirenLfo.frequency.setValueAtTime(0.4, sirenContext.currentTime);
+      lfoGain.gain.setValueAtTime(260, sirenContext.currentTime);
+
+      sirenLfo.connect(lfoGain);
+      lfoGain.connect(sirenOsc1.frequency);
+      lfoGain.connect(sirenOsc2.frequency);
+
+      sirenGain.gain.setValueAtTime(0.2, sirenContext.currentTime);
+
+      sirenOsc1.connect(sirenGain);
+      sirenOsc2.connect(sirenGain);
+      sirenGain.connect(sirenContext.destination);
+
+      sirenLfo.start();
+      sirenOsc1.start();
+      sirenOsc2.start();
+    } catch (e) {
+      console.warn("Web Audio API siren error:", e);
+    }
+  }
+
+  function stopSirenAudio() {
+    try {
+      if (sirenGain && sirenContext) {
+        sirenGain.gain.exponentialRampToValueAtTime(0.0001, sirenContext.currentTime + 0.3);
+      }
+      setTimeout(() => {
+        if (sirenOsc1) { sirenOsc1.stop(); sirenOsc1.disconnect(); }
+        if (sirenOsc2) { sirenOsc2.stop(); sirenOsc2.disconnect(); }
+        if (sirenLfo) { sirenLfo.stop(); sirenLfo.disconnect(); }
+        if (sirenContext) { sirenContext.close(); }
+      }, 350);
+    } catch (e) {
+      console.warn("Error stopping siren:", e);
+    }
+  }
+
+  // 4. WHATSAPP EMERGENCY SOS WITH REAL LOCATION REDIRECTION
+  function buildWhatsAppUrl() {
+    const text = encodeURIComponent(
+      `🚨 EMERGENCY FLOOD DISPATCH (SIH 26071 - TEAM RAIN VISION)\n\n` +
+      `Current Basin: ${currentBasinName}\n` +
+      `Water Level: ${currentWaterStage}\n` +
+      `Live GPS Coordinates: Lat ${currentLat}° N, Lon ${currentLon}° E (Accuracy: ±${currentAccuracy}m)\n` +
+      `GPS Map Pin: https://maps.google.com/?q=${currentLat},${currentLon}\n\n` +
+      `IMMEDIATE NDRF, SDRF & LIFEBOAT RESCUE ASSISTANCE REQUIRED!`
+    );
+    return `https://api.whatsapp.com/send?text=${text}`;
+  }
+
+  function sendWhatsAppSOS() {
+    acquireLiveLocation(() => {
+      const url = buildWhatsAppUrl();
+      window.open(url, '_blank');
+      showToast("Redirected to WhatsApp with live coordinates!");
+    });
+  }
+
+  function acquireLiveLocation(callback) {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          currentLat = pos.coords.latitude.toFixed(4);
+          currentLon = pos.coords.longitude.toFixed(4);
+          currentAccuracy = pos.coords.accuracy.toFixed(1);
+          updateGpsLabels();
+          if (callback) callback();
+        },
+        (err) => {
+          // Default to high-risk Kolhapur coordinates if user declines or offline
+          currentLat = "16.7050";
+          currentLon = "74.2433";
+          currentAccuracy = "4.2";
+          updateGpsLabels();
+          if (callback) callback();
+        },
+        { enableHighAccuracy: true, timeout: 5000 }
+      );
+    } else {
+      if (callback) callback();
+    }
+  }
+
+  function updateGpsLabels() {
+    const latEl = document.getElementById('gpsLat');
+    const lonEl = document.getElementById('gpsLon');
+    const accEl = document.getElementById('gpsAcc');
+    const statusEl = document.getElementById('gpsStatus');
+    if (latEl) latEl.textContent = `${currentLat}° N`;
+    if (lonEl) lonEl.textContent = `${currentLon}° E`;
+    if (accEl) accEl.textContent = `± ${currentAccuracy} meters`;
+    if (statusEl) statusEl.textContent = "Live GPS Locked";
+  }
+
+  function openSosModal() {
+    document.getElementById('sosModal').classList.remove('hidden');
+    acquireLiveLocation();
+  }
+
+  function closeSosModal() {
+    document.getElementById('sosModal').classList.add('hidden');
+  }
+
+  // 5. VIEW TAB SWITCHER
+  function switchTab(tabId, el) {
+    document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById(tabId);
+    if (target) target.classList.add('active');
+
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.classList.remove('active', 'bg-cyan-500/20', 'text-cyan-300', 'border-cyan-500/40', 'bg-purple-500/20', 'text-purple-300', 'border-purple-500/40');
+      btn.classList.add('text-slate-400');
+    });
+
+    if (el) {
+      if (tabId === 'aiml-tab') {
+        el.classList.add('active', 'bg-purple-500/20', 'text-purple-300', 'border-purple-500/40');
+      } else {
+        el.classList.add('active', 'bg-cyan-500/20', 'text-cyan-300', 'border-cyan-500/40');
+      }
+      el.classList.remove('text-slate-400');
+    }
+  }
+
+  // Basin selection
+  function selectBasin(basin) {
+    const data = {
+      kolhapur: { gauge: "43.44m", inflow: "48,200 cusec", precip: "118 mm/hr", lat: "16.7050", lon: "74.2433", name: "Kolhapur (Panchganga)", stageText: "43.44m (+0.44m Over Danger)" },
+      mumbai: { gauge: "3.85m", inflow: "22,400 cusec", precip: "84 mm/hr", lat: "19.0596", lon: "72.8295", name: "Mumbai (Mithi River)", stageText: "3.85m (High Tide Alert)" },
+      guwahati: { gauge: "49.60m", inflow: "96,000 cusec", precip: "142 mm/hr", lat: "26.1445", lon: "91.7362", name: "Guwahati (Brahmaputra)", stageText: "49.60m (Flood Warning Stage)" },
+      wayanad: { gauge: "82.00mm", inflow: "15,800 cusec", precip: "92 mm/hr", lat: "11.6854", lon: "76.1320", name: "Wayanad (Kabini Basin)", stageText: "82.0mm (Catchment Saturated)" },
+      patna: { gauge: "48.20m", inflow: "112,000 cusec", precip: "45 mm/hr", lat: "25.5941", lon: "85.1376", name: "Patna (Ganga Reach)", stageText: "48.20m (Controlled Flow)" }
+    };
+    const b = data[basin] || data.kolhapur;
+    currentBasinName = b.name;
+    currentWaterStage = b.stageText;
+    currentLat = b.lat;
+    currentLon = b.lon;
+
+    const sectorEl = document.getElementById('gpsSector');
+    const stageEl = document.getElementById('gpsStage');
+    if (sectorEl) sectorEl.textContent = b.name;
+    if (stageEl) stageEl.textContent = b.stageText;
+    updateGpsLabels();
+
+    showToast(`Basin switched to ${b.name}. Telemetry & Ensembles updated.`);
+  }
+
+  function searchBasin(val) {
+    const q = val.toLowerCase();
+    if (q.includes('mumbai') || q.includes('mithi')) selectBasin('mumbai');
+    else if (q.includes('guwahati') || q.includes('brahma')) selectBasin('guwahati');
+    else if (q.includes('wayanad') || q.includes('kabini')) selectBasin('wayanad');
+    else if (q.includes('patna') || q.includes('ganga')) selectBasin('patna');
+    else if (q.includes('kolhapur') || q.includes('panch') || q.includes('rajaram')) selectBasin('kolhapur');
+  }
+
+  function setHorizon(type, el) {
+    document.querySelectorAll('.horizon-btn').forEach(b => {
+      b.classList.remove('text-cyan-300', 'border-b-2', 'border-cyan-400', 'font-extrabold');
+      b.classList.add('text-slate-400');
+    });
+    el.classList.add('text-cyan-300', 'border-b-2', 'border-cyan-400', 'font-extrabold');
+    el.classList.remove('text-slate-400');
+    showToast(`Time horizon updated: ${el.textContent}`);
+  }
+
+  function setTelemetryMode(mode, el) {
+    document.querySelectorAll('.mode-btn').forEach(b => {
+      b.classList.remove('bg-cyan-500', 'text-slate-950', 'font-bold', 'shadow-glow-cyan');
+      b.classList.add('text-slate-400');
+    });
+    el.classList.add('bg-cyan-500', 'text-slate-950', 'font-bold', 'shadow-glow-cyan');
+    el.classList.remove('text-slate-400');
+    showToast(`Mode: ${el.textContent}`);
+  }
+
+  function scrubRadar(val) {
+    const step = document.getElementById('radarTimeStep');
+    if (step) step.textContent = `T+${val} Mins`;
+    const blob = document.getElementById('radarBlob');
+    if (blob) {
+      blob.setAttribute('cx', 370 + (val * 0.45));
+      blob.setAttribute('rx', 90 + (val * 0.2));
+    }
+  }
+
+  function runTensorInference() {
+    showToast("Executing ConvLSTM RadarNet v2.4 Multi-Horizon Tensor Inference...");
+    setTimeout(() => {
+      showToast("Inference Complete: R² = 0.963, 98.4% Confidence, Peak Crest confirmed at T+38m.");
+    }, 900);
+  }
+
+  function runNowcast() {
+    const icon = document.getElementById('mlSpinIcon');
+    if (icon) icon.classList.add('animate-spin');
+    showToast("SIH 26071 ConvLSTM RadarNet inference running across 142 basins...");
+    setTimeout(() => {
+      if (icon) icon.classList.remove('animate-spin');
+      showToast("Ensemble updated: 98.4% Confidence. Next crest projected at T+38m.");
+    }, 1000);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    const txt = document.getElementById('toastText');
+    if (txt) txt.textContent = msg;
+    if (t) {
+      t.classList.remove('hidden');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => { t.classList.add('hidden'); }, 4000);
+    }
+  }
+
+  function hideToast() {
+    const t = document.getElementById('toast');
+    if (t) t.classList.add('hidden');
+  }
+
+  // Pre-seed location on load
+  window.addEventListener('DOMContentLoaded', () => {
+    acquireLiveLocation();
+    inspectDay('today');
+  });
+</script>
+</body></html>

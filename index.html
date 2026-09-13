@@ -49,7 +49,7 @@
     }
     @keyframes cloudDrift {
       0% { transform: scale(1) translate(0, 0); }
-      50% { transform: scale(1.04) translate(-12px, -6px); }
+      50% { transform: scale(1.04) translate(-10px, -6px); }
       100% { transform: scale(1) translate(0, 0); }
     }
     @keyframes pulseAnim {
@@ -84,7 +84,7 @@
       color: #cbd5e1 !important;
     }
     html.case-a .command-viewport {
-      background: radial-gradient(circle at 50% 10%, rgba(241, 245, 249, 0.88), rgba(226, 232, 240, 0.92)) !important;
+      background: radial-gradient(circle at 50% 10%, rgba(241, 245, 249, 0.86), rgba(226, 232, 240, 0.90)) !important;
     }
     html.case-a .theme-card {
       background-color: rgba(255, 255, 255, 0.88) !important;
@@ -138,7 +138,7 @@
       color: #0f172a !important;
     }
     html.case-b .command-viewport {
-      background: radial-gradient(circle at 50% 10%, rgba(9, 14, 26, 0.85), rgba(4, 7, 13, 0.94)) !important;
+      background: radial-gradient(circle at 50% 10%, rgba(9, 14, 26, 0.88), rgba(4, 7, 13, 0.95)) !important;
     }
     html.case-b .theme-card {
       background-color: rgba(13, 19, 33, 0.85) !important;
@@ -207,12 +207,16 @@
   </style>
 </head>
 <body class="font-sans min-h-screen overflow-x-hidden antialiased select-none relative">
-<!-- ================= BACKGROUND CANVAS & STORM ATMOSPHERE LAYER (Inspired by Image 4 & Image 5) ================= -->
+<!-- ================= DIRECT EMBEDDED USER REFERENCE PICS (IMAGE_5 & IMAGE_6) ATMOSPHERE BACKDROP LAYER ================= -->
 <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-<!-- Cumulonimbus Storm Sky Reference Backdrop -->
-<img alt="Storm Cumulonimbus Clouds" class="cloud-drift absolute inset-0 w-full h-full object-cover opacity-25 mix-blend-luminosity filter blur-[1px]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6tLy2GzVtLkck8NZiwgx_xXBqvcZqSO5HO8X_rMryAuT79hfISK6TB8zPA3l7zhwOW_jRBwltqqMHSoWajkKBGvhKUhlOakLCVlWg9hnbkvFfmDDrQ0JFUw7k-pZ7ixDkQufWsvQsECYocJplus3AxYhy5e8DPJVSYXTKyNLx1HOc9KXDZAAoQNY3v901c13WwCVhrWOtpFrfFpPECRueHbnsIGfjX8Hc9pd4m5YpdAVkVIHvc6KrLvgOR1qsD1tmQHk"/>
-<!-- Thunderstorm Lightning Flash Pulse Layer -->
-<div class="lightning-layer absolute inset-0 bg-gradient-to-br from-cyan-300/40 via-white/30 to-purple-400/20"></div>
+<!-- Image 1: Cumulonimbus Storm Cell Reference -->
+<img alt="Atmospheric Thunderstorm Reference" class="cloud-drift absolute inset-0 w-full h-full object-cover object-center opacity-85 transition-all duration-1000 transform scale-105" id="bgImg1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfPgp6wEuqQCmQJOug43IhSl8qRP38-Z0za3zXQSyJRAwGRSw9Eft4XYsb-UOJvNMkyLdOp0anxeHz7wcJnL5nZZ16-xXvosgDpDQQMS3xa5qJzGSNrWScC_W2MQGhQZK1rckhQSS5oN2DHWVSndt5pa2RwEpnh5Qmu-1HjNRrw-GPIFvfUAj600KOVXAB8yYt-Z2OHmMWbhsHKBSX21oe5Amr5tLJ_aHnzzYfPH2YBWqUhKlWGCnQdsEYG7UvHxDtncY"/>
+<!-- Image 2: Storm Weather with Lightning Front Reference -->
+<img alt="Storm Weather Lightning Reference" class="cloud-drift absolute inset-0 w-full h-full object-cover object-center opacity-0 transition-all duration-1000 transform scale-105" id="bgImg2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCa2BsLrBpor11fANZ3LFGAxN-NsdAwtU1e8vg7siTv63qkKmFUNTq4Saq11fMpOmYZjSWekgV354UjNkfJlMEE4wtKATdYLI3ClBvTlMAC3xBHeutrtcDoSGfKcsVVZmhew3LkbxIqm5uajrerDWDSRlq46c80xcCT-1k9cfUhc58_jW8bVbbfoGuFaNYZQt4tL78tolWlUfDk4tQBSQLEm0jy_UQbWBcsJUwafas3ykcChGe370TAGtvkH4Yt6CIDocY"/>
+<!-- Cinematic Weather Depth Gradients & Tint Layers -->
+<div class="absolute inset-0 bg-gradient-to-r from-black/80 via-slate-900/60 to-slate-900/40 mix-blend-multiply"></div>
+<div class="lightning-layer absolute inset-0 bg-gradient-to-br from-cyan-300/35 via-white/20 to-purple-400/20"></div>
+<div class="absolute inset-0 backdrop-blur-[2px]"></div>
 <!-- Real-time Continuous HTML5 Falling Rain Canvas -->
 <canvas class="absolute inset-0 w-full h-full opacity-45" id="rainCanvas"></canvas>
 </div>
@@ -256,7 +260,7 @@
 <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Overview Basin</span>
 </div>
 <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/30 text-cyan-300 opacity-0 group-hover:opacity-100">LIVE</span>
-</button>
+</button><button class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-cyan-400 hover:bg-cyan-500/20 transition-all text-left border border-transparent" id="nav-aimaps-btn" onclick="switchTab('aimaps-tab', this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-xl text-cyan-400 shrink-0">map</span><span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap font-bold">AI Maps</span></div><span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold opacity-0 group-hover:opacity-100">GIS Live</span></button>
 <!-- 2. AI Prediction (Lightning) -->
 <button class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-purple-400 hover:bg-purple-500/20 transition-all text-left border border-transparent" onclick="switchTab('aiml-tab', this)">
 <div class="flex items-center gap-3">
@@ -311,14 +315,21 @@
 <option value="guwahati">Guwahati (Brahmaputra) - FLOOD WARNING</option>
 <option value="wayanad">Wayanad (Kabini) - RUNOFF WATCH</option>
 <option value="patna">Patna (Ganga Reach) - CONTROLLED</option>
-</select>
+</select><div class="flex items-center p-1 rounded-2xl theme-card-subtle border gap-1 shrink-0 font-mono text-xs"><button class="px-3 py-1.5 rounded-xl bg-cyan-500 text-slate-950 font-bold shadow-glow-cyan transition-all flex items-center gap-1.5" id="topTabOverview" onclick="switchTab('overview-tab', document.querySelector('aside nav &gt; button:nth-child(1)'))"><span class="material-symbols-outlined text-sm">dashboard</span><span>Overview</span></button><button class="px-3 py-1.5 rounded-xl text-slate-500 hover:text-cyan-400 font-bold transition-all flex items-center gap-1.5" id="topTabAiMaps" onclick="switchTab('aimaps-tab', document.getElementById('nav-aimaps-btn'))"><span class="material-symbols-outlined text-sm text-cyan-400">map</span><span>AI Maps</span><span class="w-2 h-2 rounded-full bg-cyan-400 pulsing-dot"></span></button></div>
 <div class="relative flex-1">
 <input class="w-full pl-9 pr-4 py-2 text-xs rounded-2xl card-input outline-none font-mono focus:ring-2 focus:ring-cyan-500/40" id="quickSearch" onkeyup="searchBasin(this.value)" placeholder="Search river, gauge, dam (e.g. Rajaram, 416001)..." type="text"/>
 <span class="material-symbols-outlined text-base text-cyan-500 absolute left-2.5 top-2.5">search</span>
 </div>
 </div>
-<!-- Top Right Actions: SOS Hotlines + TWO-TONE CASE [A] vs CASE [B] Toggle Switcher -->
-<div class="flex items-center gap-3">
+<!-- Top Right Actions: Direct Pic Switcher + SOS Hotlines + TWO-TONE CASE [A] vs CASE [B] Toggle Switcher -->
+<div class="flex items-center gap-2.5 flex-wrap">
+<!-- DIRECT USER REFERENCE PICTURE SWITCHER PILL -->
+<div class="flex items-center p-1 rounded-2xl theme-card-subtle border gap-1 text-[11px] font-mono font-bold" title="Toggle between both uploaded storm reference images">
+<span class="px-1.5 text-cyan-500 flex items-center gap-1">⛈️ <span class="hidden xl:inline">Ref Pic:</span></span>
+<button class="px-2 py-1 rounded-xl bg-cyan-500 text-slate-950 shadow-glow-cyan transition-all" id="picBtn1" onclick="switchWallpaper('pic1')">Pic 1</button>
+<button class="px-2 py-1 rounded-xl text-slate-500 hover:text-cyan-500 transition-all" id="picBtn2" onclick="switchWallpaper('pic2')">Pic 2</button>
+<button class="px-2 py-1 rounded-xl text-slate-500 hover:text-cyan-500 transition-all hidden sm:block" id="picBtnAuto" onclick="toggleAutoCrossfade()">Auto ↻</button>
+</div>
 <!-- SOS Hotline Pill -->
 <button class="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white font-extrabold text-xs tracking-wide shadow-glow-red border border-rose-400/80 hover:scale-105 active:scale-95 transition-all" onclick="openSosModal()" title="Instant Live Emergency Dispatch &amp; WhatsApp Alert">
 <span class="w-2 h-2 rounded-full bg-white pulsing-dot"></span>
@@ -347,7 +358,7 @@
 <div class="p-6 space-y-6 flex-1">
 <!-- ================= PANEL 1: OVERVIEW BASIN ================= -->
 <div class="view-panel active space-y-6" id="overview-tab">
-<!-- Horizon Filters + Mode Toggle (Inundation Forecast vs Dedicated Rainfall Runoff) -->
+<!-- Horizon Filters + Mode Toggle (Strictly Inundation Forecast vs Rainfall Runoff) -->
 <div class="flex flex-wrap items-center justify-between gap-4">
 <div class="flex items-center gap-3 text-xs font-bold font-mono">
 <button class="horizon-btn px-3 py-1.5 rounded-xl border border-transparent text-slate-500 hover:text-cyan-500 transition-all" onclick="setHorizon('past24', this)">
@@ -360,7 +371,7 @@
                 Next 7 Days Surge (Interactive)
               </button>
 </div>
-<!-- Inundation Forecast vs Rainfall Runoff Switcher -->
+<!-- Inundation Forecast vs Rainfall Runoff Switcher (strictly two tabs) -->
 <div class="flex items-center p-1 rounded-2xl theme-card-subtle border">
 <button class="mode-btn px-3.5 py-1.5 rounded-xl bg-cyan-500 text-slate-950 font-mono text-xs font-bold shadow-glow-cyan" onclick="setTelemetryMode('inundation', this)">
                 Inundation Forecast
@@ -578,6 +589,47 @@
 <span class="w-2 h-2 rounded-full bg-rose-500 pulsing-dot"></span> Peak Window: 11:30 - 14:00
                   </span>
 <span class="text-cyan-600 dark:text-cyan-300 font-bold">Runoff +2.4 m³/s</span>
+</div>
+</div>
+</div>
+<!-- ================= DIRECT USER PICTURE FEEDS CAROUSEL & COMPARISON CARD ================= -->
+<div class="rounded-3xl p-5 theme-card shadow-glass space-y-4">
+<div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-cyan-500">satellite_alt</span>
+<h3 class="text-sm font-bold txt-primary font-mono uppercase tracking-wide">Live Doppler Radar &amp; Visual Atmosphere Feeds (User Reference Imagery)</h3>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-2.5 py-1 rounded-xl text-xs font-mono font-bold bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/30" onclick="switchWallpaper('pic1')">Focus Feed A</button>
+<button class="px-2.5 py-1 rounded-xl text-xs font-mono font-bold bg-purple-500/20 text-purple-600 dark:text-purple-300 border border-purple-500/30 hover:bg-purple-500/30" onclick="switchWallpaper('pic2')">Focus Feed B</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Feed A: Image 5 -->
+<div class="group relative rounded-2xl overflow-hidden border border-slate-300 dark:border-slate-700/80 cursor-pointer shadow-md" onclick="switchWallpaper('pic1')">
+<div class="h-44 w-full overflow-hidden">
+<img alt="Atmospheric Thunderstorm Reference Feed" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEHFiE1jcH3kBtnsXi4l4ygHi5S_oQEbHStOoJ5am9K-xwqo2IJkIX_t_QEGrDS5enZzrfTHO8yU0HNyIy0YfZxfn9C3PMqhO1nq0VzXan7n6_Srd6LZD6tF13E8SIKvql36lLhddjchrmlwbd3CarmS0-scb7ytzzaYcyaBVfR2DKTvhgMOVaZ1N8sj8nLx4zv42rnC1U5Mq5bAf8aKfzSdXifdUi_V9PVzVMwk-gqbfX_U8AIgAoajWouHMu8JbRKwo"/>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex flex-col justify-end p-3.5 text-white">
+<div class="flex items-center justify-between text-xs font-mono">
+<span class="px-2 py-0.5 rounded bg-cyan-500 text-slate-950 font-bold">Feed A • Cumulonimbus Cell</span>
+<span class="text-[10px] text-cyan-300 font-mono">22°C | Intense Thunderstorms</span>
+</div>
+<p class="text-[11px] text-slate-200 font-sans mt-1">High-precipitation supercell nowcast: localized flash flood alerts active.</p>
+</div>
+</div>
+<!-- Feed B: Image 6 -->
+<div class="group relative rounded-2xl overflow-hidden border border-slate-300 dark:border-slate-700/80 cursor-pointer shadow-md" onclick="switchWallpaper('pic2')">
+<div class="h-44 w-full overflow-hidden">
+<img alt="Storm Weather Lightning Reference Feed" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBicLRYtwuJ7ll_eBoEKIrqIVrOMuGDryOLt7EnmcFRin__gR1J0FTmfhyM0nhFhUOdW18P9ZrrQjIJImg1WdtN59Y-S1xc5eulat7bWFpOQHnmdrIx7ozFk5MomsGnL7p-5vHhTwvfIb36po0PWJtkjcDdelA8tbrJXt2KnJXCNrfdAlTMbexQsyABG69guj2ZJIgMwHszucqPOPTrw1kmR1PSMLOOILlV0hZOo45BrvEvjx3Us1r0DUffRD-f2Cv7Rg"/>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex flex-col justify-end p-3.5 text-white">
+<div class="flex items-center justify-between text-xs font-mono">
+<span class="px-2 py-0.5 rounded bg-purple-500 text-white font-bold">Feed B • Meso-Convective Lightning</span>
+<span class="text-[10px] text-purple-300 font-mono">10°C | Storm Heavy Rain</span>
+</div>
+<p class="text-[11px] text-slate-200 font-sans mt-1">Ground-strike lightning cluster &amp; agricultural runoff surge channel monitoring.</p>
+</div>
 </div>
 </div>
 </div>
@@ -879,7 +931,7 @@
 <span class="text-[10px] text-cyan-500 font-mono">05th Battalion Pune</span>
 </div>
 </div>
-</div>
+</div><div class="view-panel space-y-5" id="aimaps-tab"><div class="p-4 rounded-3xl theme-card border flex flex-wrap items-center justify-between gap-4"><div class="flex items-center gap-3 flex-wrap"><div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-cyan-400 pulsing-dot"></div><h2 class="text-base font-extrabold txt-primary font-mono uppercase tracking-wide flex items-center gap-2"><span>GIS Radar &amp; Vector Hydrology Map</span><span class="text-[10px] px-2 py-0.5 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">GeoJSON Layer 4.2</span></h2></div><div class="flex items-center p-1 rounded-2xl theme-card-subtle border gap-1 text-xs font-mono font-bold"><button class="px-3.5 py-1.5 rounded-xl bg-cyan-500 text-slate-950 font-extrabold shadow-glow-cyan transition-all" id="mapSubViewMumbai" onclick="setMapSubView('mumbai')">Mumbai MMR Inundation &amp; Weather</button><button class="px-3.5 py-1.5 rounded-xl text-slate-500 hover:text-cyan-400 font-semibold transition-all" id="mapSubViewIndia" onclick="setMapSubView('india')">All-India Weather AI Prediction</button></div></div><div class="flex items-center gap-2 text-xs font-mono"><span class="txt-muted">Active Radar:</span><span class="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-500 font-bold border border-rose-500/30 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> 54.8 dBZ High Convection</span><span class="text-cyan-400 font-bold hidden sm:inline">• Lat 18.92° N | Lon 72.83° E</span></div></div><div class="relative w-full h-[620px] rounded-3xl overflow-hidden border border-cyan-500/30 shadow-2xl bg-[#070d1e]"><div class="absolute top-4 left-4 z-20 flex flex-col gap-2 max-w-sm"><div class="p-3.5 rounded-2xl bg-slate-950/90 backdrop-blur-md border border-cyan-500/40 text-xs font-mono shadow-xl space-y-2"><div class="flex items-center justify-between"><span class="font-bold text-cyan-300 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-cyan-400">search</span> Quick GeoSearch</span><span class="text-[10px] text-slate-400">Enter to pin</span></div><input class="w-full px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 text-xs outline-none focus:border-cyan-400 font-mono" id="mapGeoSearch" onkeyup="if(event.key==='Enter') searchMapPin(this.value)" placeholder="Search Fort, Nariman Point, Bandra, BKC..." type="text"/><div class="flex gap-1.5 flex-wrap text-[10px]"><button class="px-2 py-0.5 rounded bg-cyan-950/70 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/20" onclick="panToLocation('kala_ghoda')">Kala Ghoda</button><button class="px-2 py-0.5 rounded bg-cyan-950/70 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/20" onclick="panToLocation('nariman')">Nariman Pt</button><button class="px-2 py-0.5 rounded bg-cyan-950/70 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/20" onclick="panToLocation('fort')">Fort</button><button class="px-2 py-0.5 rounded bg-cyan-950/70 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/20" onclick="panToLocation('airport')">Airport CSMIA</button></div></div><div class="p-3.5 rounded-2xl bg-slate-950/90 backdrop-blur-md border border-slate-800 text-xs font-mono shadow-xl space-y-1.5" id="mumbaiWeatherBadge"><div class="flex justify-between items-center text-cyan-400 font-bold"><span>MUMBAI STATE METEOROLOGY</span><span class="px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-400 text-[10px]">HIGH SURGE</span></div><div class="grid grid-cols-2 gap-2 text-[11px] pt-1"><div class="text-slate-300">Mithi River: <strong class="text-rose-400">3.82m</strong> (Dng 3.50m)</div><div class="text-slate-300">Arabian Tide: <strong class="text-amber-400">4.85m</strong> @ 14:45</div><div class="text-slate-300">Temp: <strong class="text-cyan-300">27.4°C</strong> | 96% RH</div><div class="text-slate-300">Wind: <strong class="text-cyan-300">42 km/h</strong> SW Gusts</div><div class="text-slate-300 col-span-2 flex justify-between border-t border-slate-800 pt-1"><span>Precip Rate:</span><strong class="text-rose-400">48 mm/hr (Convective Cell)</strong></div></div></div><div class="hidden p-3.5 rounded-2xl bg-slate-950/90 backdrop-blur-md border border-purple-500/40 text-xs font-mono shadow-xl space-y-1.5" id="indiaWeatherBadge"><div class="flex justify-between items-center text-purple-300 font-bold"><span>ALL-INDIA SYNOPTIC RADAR</span><span class="px-1.5 py-0.2 rounded bg-purple-500/20 text-purple-300 text-[10px]">MONSOON TROUGH</span></div><div class="text-[11px] text-slate-300 space-y-1 pt-1"><div>Western Ghats: <strong class="text-rose-400">Extremely Heavy (180mm)</strong></div><div>Assam / Brahmaputra: <strong class="text-amber-400">Crest 49.6m Flood Watch</strong></div><div>Konkan Coast: <strong class="text-cyan-300">Active Cloudburst Cluster</strong></div></div></div></div><div class="w-full h-full relative cursor-grab active:cursor-grabbing select-none" id="mapInteractiveCanvas"><svg class="w-full h-full" id="mapSvgMumbai" preserveaspectratio="xMidYMid slice" viewbox="0 0 1000 620"><rect fill="#070d1e" height="620" width="1000"></rect><path d="M 0,0 L 220,0 Q 240,120 200,240 T 160,420 Q 210,500 240,620 L 0,620 Z" fill="#040813"></path><path d="M 1000,0 L 780,0 Q 750,180 810,320 T 770,620 L 1000,620 Z" fill="#040813"></path><path d="M 200,620 C 180,480 230,380 280,310 C 330,240 370,140 350,0 L 680,0 C 710,130 670,260 640,350 C 610,440 640,540 610,620 Z" fill="#0a1428" stroke="#152744" stroke-width="2"></path><path d="M 380,240 Q 420,380 410,620 L 480,620 Q 490,400 460,230 Z" fill="#08172c" stroke="#1c3860" stroke-width="1.5"></path><g fill="none" stroke="#172a45" stroke-width="1.5"><path d="M 240,180 L 620,220"></path><path d="M 220,290 L 640,330"></path><path d="M 230,380 L 600,430"></path><path d="M 250,470 L 580,510"></path><path d="M 320,110 L 420,620"></path><path d="M 490,90 L 560,620"></path><path d="M 280,340 Q 450,300 620,360"></path><path d="M 310,210 Q 510,170 590,260"></path></g><path d="M 420,0 Q 380,180 310,240 T 260,390 Q 220,490 190,620" fill="none" filter="drop-shadow(0 0 6px rgba(0,217,255,0.7))" stroke="#00d9ff" stroke-linecap="round" stroke-width="4"></path><path d="M 340,0 L 330,120 Q 380,180 430,240 T 540,430 Q 580,520 540,620" fill="none" filter="drop-shadow(0 0 6px rgba(244,63,94,0.7))" stroke="#f43f5e" stroke-linecap="round" stroke-width="3.5"></path><path d="M 530,180 Q 570,195 620,185" fill="none" stroke="#eab308" stroke-linecap="round" stroke-width="3"></path><path d="M 280,0 Q 290,130 350,220 T 450,410 L 460,620" fill="none" stroke="#38bdf8" stroke-dasharray="6 4" stroke-width="2.5"></path><g class="cursor-pointer" onclick="showMapPopup('KALA GHODA', 'Heritage Arts District • Storm water runoff clear, pumps 4/4 operational. Water level: 0.12m nominal.', '18.9298° N, 72.8333° E')"><circle class="pulsing-dot" cx="520" cy="240" fill="none" r="16" stroke="#00d9ff" stroke-width="1.5"></circle><circle cx="520" cy="240" fill="#00d9ff" r="7"></circle><circle cx="520" cy="240" fill="#ffffff" r="3"></circle><text fill="#f1f5f9" font-family="Space Grotesk" font-size="14" font-weight="bold" x="535" y="244">KALA GHODA</text><text fill="#94a3b8" font-family="Noto Sans Dev" font-size="11" x="535" y="258">काळा घोडा</text></g><g class="cursor-pointer" onclick="showMapPopup('FORT', 'Commercial Financial District • Heavy localized water accumulation near Ballard Estate subway. Level: 0.42m.', '18.9322° N, 72.8335° E')"><circle cx="630" cy="180" fill="#f43f5e" r="6"></circle><text fill="#f1f5f9" font-family="Space Grotesk" font-size="13" font-weight="bold" x="644" y="184">FORT</text><text fill="#94a3b8" font-family="sans-serif" font-size="10" x="644" y="197">बॅलार्ड इस्टेट</text></g><g class="cursor-pointer" onclick="showMapPopup('NARIMAN POINT', 'Coastal Promontory • Arabian Sea high tide wave overtopping alert! Sea wall buffers active.', '18.9256° N, 72.8242° E')"><circle class="pulsing-dot" cx="320" cy="370" fill="none" r="14" stroke="#f59e0b" stroke-width="1.5"></circle><circle cx="320" cy="370" fill="#f59e0b" r="6"></circle><text fill="#f1f5f9" font-family="Space Grotesk" font-size="12" font-weight="bold" text-anchor="middle" x="300" y="400">NARIMAN POINT</text></g><g class="cursor-pointer" onclick="showMapPopup('BANDRA WEST', 'Hill Road &amp; Carter Rd • Minor coastal wind shear, storm drainage free-flowing.', '19.0596° N, 72.8295° E')"><circle cx="310" cy="160" fill="#00d9ff" r="6"></circle><text fill="#f1f5f9" font-family="Space Grotesk" font-size="12" font-weight="bold" x="280" y="145">BANDRA WEST</text></g><g class="cursor-pointer" onclick="showMapPopup('CSMIA AIRPORT', 'Runway 09/27 • Mithi River diversion channel monitored, zero runway waterlogging.', '19.0896° N, 72.8656° E')"><circle cx="420" cy="80" fill="rgba(0,217,255,0.2)" r="14" stroke="#00d9ff" stroke-width="1"></circle><circle cx="420" cy="80" fill="#38bdf8" r="6"></circle><text fill="#f1f5f9" font-family="Space Grotesk" font-size="12" font-weight="bold" x="440" y="78">Chhatrapati Shivaji Maharaj</text><text fill="#94a3b8" font-family="sans-serif" font-size="10" x="440" y="92">International Airport (CSMIA)</text></g><g class="cursor-pointer" onclick="showMapPopup('COLABA &amp; MARINA', 'Southern Tip • Lighthouse telemetry operational, tide +4.85m peak.', '18.9067° N, 72.8147° E')"><circle cx="310" cy="560" fill="#a855f7" r="6"></circle><text fill="#f1f5f9" font-family="Space Grotesk" font-size="12" font-weight="bold" x="325" y="564">Marina Lighthouse</text><text fill="#94a3b8" font-family="sans-serif" font-size="10" x="325" y="578">Colaba Causeway</text></g><g class="cursor-pointer" onclick="showMapPopup('ELEPHANTA ISLAND', 'Harbor Navigational Node • Ferry services temporarily suspended due to 42km/h squall.', '18.9633° N, 72.9315° E')"><circle cx="840" cy="340" fill="#00d9ff" r="6"></circle><text fill="#f1f5f9" font-family="Space Grotesk" font-size="12" font-weight="bold" text-anchor="middle" x="840" y="360">Elephanta Island</text><text fill="#94a3b8" font-family="sans-serif" font-size="10" text-anchor="middle" x="840" y="374">घारापुरी</text></g><text fill="#94a3b8" font-family="JetBrains Mono" font-size="11" transform="rotate(-18 410 180)" x="410" y="180">VN Rd</text><text fill="#94a3b8" font-family="JetBrains Mono" font-size="11" transform="rotate(78 485 110)" x="485" y="110">Mahatma Gandhi Road</text><text fill="#94a3b8" font-family="JetBrains Mono" font-size="11" transform="rotate(16 350 335)" x="350" y="335">Madame Cama Rd</text><text fill="#94a3b8" font-family="JetBrains Mono" font-size="11" transform="rotate(-52 480 490)" x="480" y="490">Shahid Bhagat Singh Rd</text><g transform="translate(510, 160)"><rect fill="#ffffff" height="18" rx="9" stroke="#0f172a" stroke-width="1.5" width="18"></rect><circle cx="9" cy="9" fill="#f43f5e" r="4"></circle></g><g transform="translate(400, 395)"><rect fill="#ffffff" height="18" rx="9" stroke="#0f172a" stroke-width="1.5" width="18"></rect><circle cx="9" cy="9" fill="#00d9ff" r="4"></circle></g><g transform="translate(210, 310)"><rect fill="#a855f7" height="20" opacity="0.85" rx="10" width="20"></rect><circle cx="10" cy="10" fill="#ffffff" r="5"></circle></g><g transform="translate(600, 410)"><rect fill="#f472b6" height="20" opacity="0.85" rx="10" width="20"></rect><circle cx="10" cy="10" fill="#ffffff" r="5"></circle></g><g transform="translate(660, 420)"><rect fill="#334155" height="18" rx="9" width="18"></rect><text fill="#f1f5f9" font-family="JetBrains Mono" font-size="9" text-anchor="middle" x="9" y="13">🚆</text></g><text fill="#ffffff" font-family="Space Grotesk" font-size="36" font-weight="bold" opacity="0.95" x="320" y="320">Mumbai</text><text fill="#cbd5e1" font-family="sans-serif" font-size="24" opacity="0.9" x="325" y="358">मुंबई</text></svg><svg class="w-full h-full hidden" id="mapSvgIndia" preserveaspectratio="xMidYMid slice" viewbox="0 0 1000 620"><rect fill="#060a16" height="620" width="1000"></rect><path d="M 430,30 L 480,45 L 530,95 L 490,160 L 560,190 L 620,180 L 730,190 L 780,240 L 730,280 L 640,270 L 600,310 L 560,400 L 520,530 L 490,570 L 470,530 L 430,420 L 390,340 L 340,300 L 320,230 L 380,180 L 420,100 Z" fill="#091326" stroke="#1e293b" stroke-width="2"></path><circle class="pulsing-dot" cx="405" cy="350" fill="none" r="55" stroke="#ef4444" stroke-dasharray="4 3" stroke-width="2"></circle><circle cx="405" cy="350" fill="rgba(239, 68, 68, 0.35)" r="38"></circle><text fill="#ffffff" font-family="JetBrains Mono" font-size="11" font-weight="bold" text-anchor="middle" x="405" y="355">Mumbai 54.8 dBZ</text><circle class="pulsing-dot" cx="425" cy="410" fill="none" r="42" stroke="#f59e0b" stroke-dasharray="4 3" stroke-width="2"></circle><circle cx="425" cy="410" fill="rgba(245, 158, 11, 0.3)" r="26"></circle><text fill="#ffffff" font-family="JetBrains Mono" font-size="10" font-weight="bold" text-anchor="middle" x="425" y="414">Kolhapur 48.6 dBZ</text><circle cx="710" cy="220" fill="none" r="48" stroke="#00d9ff" stroke-dasharray="4 3" stroke-width="2"></circle><circle cx="710" cy="220" fill="rgba(0, 217, 255, 0.25)" r="32"></circle><text fill="#ffffff" font-family="JetBrains Mono" font-size="10" font-weight="bold" text-anchor="middle" x="710" y="224">Assam / Guwahati</text><path d="M 340,240 Q 480,290 620,270 T 780,250" fill="none" stroke="#f43f5e" stroke-dasharray="8 4" stroke-width="3"></path><text fill="#f43f5e" font-family="JetBrains Mono" font-size="10" font-weight="bold" x="510" y="270">Monsoon Low Pressure Trough</text></svg></div><div class="hidden absolute top-20 right-20 z-30 w-80 rounded-2xl bg-slate-950/95 border border-cyan-400 p-4 text-xs font-mono shadow-glow-cyan space-y-2" id="mapInfoPopup"><div class="flex justify-between items-center"><strong class="text-cyan-300 text-sm font-display" id="popupTitle">Location</strong><button class="text-slate-400 hover:text-white font-bold" onclick="closeMapPopup()">✕</button></div><p class="text-slate-200 text-[11px] leading-relaxed" id="popupDesc">Description</p><div class="flex justify-between items-center text-[10px] text-cyan-400 border-t border-slate-800 pt-2"><span id="popupCoords">Coordinates</span><button class="px-2 py-0.5 rounded bg-cyan-500 text-slate-950 font-bold hover:bg-cyan-400" onclick="showToast('Dispatching hydro survey drone to '+document.getElementById('popupTitle').innerText)">Dispatch Drone</button></div></div><div class="absolute bottom-5 right-5 z-20 flex flex-col items-end gap-3"><div class="flex flex-col rounded-2xl bg-slate-950/80 backdrop-blur-md border border-slate-700 overflow-hidden shadow-xl"><button class="w-9 h-9 flex items-center justify-center text-white hover:bg-cyan-500/20 text-lg font-bold border-b border-slate-800" onclick="zoomMap(1.15)">+</button><button class="w-9 h-9 flex items-center justify-center text-white hover:bg-cyan-500/20 text-lg font-bold" onclick="zoomMap(0.87)">−</button></div><div class="flex items-center gap-3"><div class="flex flex-col items-end text-[10px] font-mono text-slate-300"><div class="flex items-center gap-1.5"><div class="w-12 h-1 border-b-2 border-slate-300"></div><span>1000 ft</span></div><div class="flex items-center gap-1.5"><div class="w-12 h-1 border-b-2 border-slate-300"></div><span>500 m</span></div></div><div class="w-12 h-12 rounded-full bg-slate-900/90 border border-slate-700 flex items-center justify-center text-slate-400 shadow-xl cursor-pointer hover:border-cyan-400 transition-all" title="Recenter Compass Bearing"><span class="material-symbols-outlined text-2xl text-slate-300 transform -rotate-45">explore</span></div><div class="w-12 h-12 rounded-2xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 flex items-center justify-center shadow-glow-cyan cursor-pointer transition-all" title="Active Route Navigation"><span class="material-symbols-outlined text-2xl font-bold">turn_right</span></div></div></div><div class="absolute bottom-5 left-5 z-20 flex items-center gap-4 bg-slate-950/85 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-slate-800 text-[10px] font-mono"><span class="font-bold text-slate-300 flex items-center gap-1"><span class="text-cyan-400">Google Maps</span> Vector Engine</span><span class="flex items-center gap-1.5 text-cyan-300"><span class="w-2.5 h-1 bg-cyan-400 rounded-full"></span> Metro / Road Corridor</span><span class="flex items-center gap-1.5 text-rose-400"><span class="w-2.5 h-1 bg-rose-500 rounded-full"></span> Central Transit</span><span class="flex items-center gap-1.5 text-amber-300"><span class="w-2 h-2 rounded-full bg-amber-400"></span> Surge Gauge</span></div></div><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div class="p-4 rounded-3xl theme-card border"><span class="text-[10px] txt-muted font-mono uppercase font-semibold">BKC Mithi Sensor</span><div class="text-lg font-black txt-primary font-mono mt-0.5">3.82 m <span class="text-xs text-rose-500 font-semibold">Over +0.32m</span></div><span class="text-[10px] text-rose-500 font-mono">Dharavi Barrage Open</span></div><div class="p-4 rounded-3xl theme-card border"><span class="text-[10px] txt-muted font-mono uppercase font-semibold">Milan &amp; Hindmata Subways</span><div class="text-lg font-black text-amber-500 font-mono mt-0.5">0.38 m Water</div><span class="text-[10px] txt-muted font-mono">Dewatering 6 Pumps Run</span></div><div class="p-4 rounded-3xl theme-card border"><span class="text-[10px] txt-muted font-mono uppercase font-semibold">Arabian Sea High Tide</span><div class="text-lg font-black txt-primary font-mono mt-0.5">4.85 m <span class="text-xs text-cyan-500 font-semibold">@ 14:45</span></div><span class="text-[10px] text-cyan-500 font-mono">Flood Gate Flaps Closed</span></div><div class="p-4 rounded-3xl theme-card border"><span class="text-[10px] txt-muted font-mono uppercase font-semibold">IMD Doppler Reflectivity</span><div class="text-lg font-black txt-primary font-mono mt-0.5">54.8 dBZ <span class="text-xs text-rose-500 font-semibold">Torrential</span></div><span class="text-[10px] text-rose-500 font-mono">Veravali &amp; Powai Core</span></div></div></div>
 <!-- ================= PANEL 2: AI PREDICTION STUDIO & PAN-INDIA GEOSEARCH ================= -->
 <div class="view-panel space-y-6" id="aiml-tab">
 <!-- Banner -->
@@ -945,7 +997,7 @@
 <stop offset="0%" stop-color="#ef4444" stop-opacity="0.85"></stop>
 <stop offset="35%" stop-color="#f59e0b" stop-opacity="0.65"></stop>
 <stop offset="70%" stop-color="#00d9ff" stop-opacity="0.4"></stop>
-<stop offset="100%" stop-color="#00d9ff" stop-opacity="0"></stop>
+<stop offset="100%" stop-color="#00d9ff" stop-opacity="0.0"></stop>
 </radialgradient>
 </defs>
 <circle cx="350" cy="150" fill="none" r="120" stroke="#1e293b" stroke-dasharray="4 4" stroke-width="1.5"></circle>
@@ -1137,6 +1189,56 @@
     let currentAccuracy = "4.2";
     let currentBasinName = "Kolhapur (Panchganga Basin)";
     let currentWaterStage = "43.44m (+0.44m Over Danger)";
+    let activeWallpaper = "pic1";
+    let autoCrossfadeTimer = null;
+
+    // DIRECT WALLPAPER & CROSSFADE CONTROLLER FOR IMAGE_5 & IMAGE_6
+    function switchWallpaper(pic) {
+      const img1 = document.getElementById('bgImg1');
+      const img2 = document.getElementById('bgImg2');
+      const btn1 = document.getElementById('picBtn1');
+      const btn2 = document.getElementById('picBtn2');
+
+      if (pic === 'pic1') {
+        activeWallpaper = 'pic1';
+        if (img1) img1.style.opacity = '0.85';
+        if (img2) img2.style.opacity = '0';
+        if (btn1) {
+          btn1.className = "px-2 py-1 rounded-xl bg-cyan-500 text-slate-950 shadow-glow-cyan transition-all";
+        }
+        if (btn2) {
+          btn2.className = "px-2 py-1 rounded-xl text-slate-500 hover:text-cyan-500 transition-all";
+        }
+        showToast("Switched active atmosphere backdrop to Reference Pic 1 (Cumulonimbus Cell Storm)");
+      } else {
+        activeWallpaper = 'pic2';
+        if (img1) img1.style.opacity = '0';
+        if (img2) img2.style.opacity = '0.85';
+        if (btn2) {
+          btn2.className = "px-2 py-1 rounded-xl bg-purple-500 text-white shadow-glow-purple transition-all";
+        }
+        if (btn1) {
+          btn1.className = "px-2 py-1 rounded-xl text-slate-500 hover:text-cyan-500 transition-all";
+        }
+        showToast("Switched active atmosphere backdrop to Reference Pic 2 (Meso-Convective Lightning Front)");
+      }
+    }
+
+    function toggleAutoCrossfade() {
+      const autoBtn = document.getElementById('picBtnAuto');
+      if (autoCrossfadeTimer) {
+        clearInterval(autoCrossfadeTimer);
+        autoCrossfadeTimer = null;
+        if (autoBtn) autoBtn.classList.remove('text-cyan-400', 'font-extrabold');
+        showToast("Auto-crossfade paused.");
+      } else {
+        if (autoBtn) autoBtn.classList.add('text-cyan-400', 'font-extrabold');
+        showToast("Auto-crossfade enabled: Smoothly alternating between Pic 1 and Pic 2 every 6s.");
+        autoCrossfadeTimer = setInterval(() => {
+          switchWallpaper(activeWallpaper === 'pic1' ? 'pic2' : 'pic1');
+        }, 6000);
+      }
+    }
 
     // 1. TWO-TONE TOGGLE: CASE [A] vs CASE [B]
     function toggleCaseTheme() {
@@ -1447,6 +1549,94 @@
     window.addEventListener('DOMContentLoaded', () => {
       acquireLiveLocation();
       inspectDay('wed');
+      switchWallpaper('pic1');
     });
   </script>
-</body></html>
+<script>
+// AI Maps Integration & Seamless State Toggling
+let currentMapScale = 1.0;
+
+function setMapSubView(view) {
+  const btnMumbai = document.getElementById('mapSubViewMumbai');
+  const btnIndia = document.getElementById('mapSubViewIndia');
+  const svgMumbai = document.getElementById('mapSvgMumbai');
+  const svgIndia = document.getElementById('mapSvgIndia');
+  const badgeMumbai = document.getElementById('mumbaiWeatherBadge');
+  const badgeIndia = document.getElementById('indiaWeatherBadge');
+
+  if (view === 'mumbai') {
+    if (btnMumbai) btnMumbai.className = 'px-3.5 py-1.5 rounded-xl bg-cyan-500 text-slate-950 font-extrabold shadow-glow-cyan transition-all';
+    if (btnIndia) btnIndia.className = 'px-3.5 py-1.5 rounded-xl text-slate-500 hover:text-cyan-400 font-semibold transition-all';
+    if (svgMumbai) svgMumbai.classList.remove('hidden');
+    if (svgIndia) svgIndia.classList.add('hidden');
+    if (badgeMumbai) badgeMumbai.classList.remove('hidden');
+    if (badgeIndia) badgeIndia.classList.add('hidden');
+    showToast('Loaded Mumbai MMR Inundation & Weather Grid matching Reference vector imagery');
+  } else {
+    if (btnIndia) btnIndia.className = 'px-3.5 py-1.5 rounded-xl bg-cyan-500 text-slate-950 font-extrabold shadow-glow-cyan transition-all';
+    if (btnMumbai) btnMumbai.className = 'px-3.5 py-1.5 rounded-xl text-slate-500 hover:text-cyan-400 font-semibold transition-all';
+    if (svgMumbai) svgMumbai.classList.add('hidden');
+    if (svgIndia) svgIndia.classList.remove('hidden');
+    if (badgeMumbai) badgeMumbai.classList.add('hidden');
+    if (badgeIndia) badgeIndia.classList.remove('hidden');
+    showToast('Loaded All-India Synoptic Weather Radar & Cloudburst Nowcasting vectors');
+  }
+}
+
+function showMapPopup(title, desc, coords) {
+  const p = document.getElementById('mapInfoPopup');
+  const t = document.getElementById('popupTitle');
+  const d = document.getElementById('popupDesc');
+  const c = document.getElementById('popupCoords');
+  if (t) t.innerText = title;
+  if (d) d.innerText = desc;
+  if (c) c.innerText = coords;
+  if (p) p.classList.remove('hidden');
+}
+
+function closeMapPopup() {
+  const p = document.getElementById('mapInfoPopup');
+  if (p) p.classList.add('hidden');
+}
+
+function zoomMap(factor) {
+  currentMapScale = Math.min(Math.max(currentMapScale * factor, 0.7), 2.2);
+  const canvas = document.getElementById('mapInteractiveCanvas');
+  if (canvas) canvas.style.transform = `scale(${currentMapScale})`;
+}
+
+function panToLocation(loc) {
+  setMapSubView('mumbai');
+  if (loc === 'kala_ghoda') showMapPopup('KALA GHODA', 'Arts & Heritage Quarter • Normal storm drainage. Mithi reach 3.82m.', '18.9298° N, 72.8333° E');
+  else if (loc === 'nariman') showMapPopup('NARIMAN POINT', 'Marine Drive Promontory • High tide tidal swell buffer active.', '18.9256° N, 72.8242° E');
+  else if (loc === 'fort') showMapPopup('FORT', 'South Mumbai Business Hub • Traffic diversion around flooded subway.', '18.9322° N, 72.8335° E');
+  else if (loc === 'airport') showMapPopup('CSMIA AIRPORT', 'Chhatrapati Shivaji Maharaj International Airport • Runways all green.', '19.0896° N, 72.8656° E');
+}
+
+function searchMapPin(query) {
+  const q = query.toLowerCase();
+  if (q.includes('ghoda')) panToLocation('kala_ghoda');
+  else if (q.includes('nariman') || q.includes('point')) panToLocation('nariman');
+  else if (q.includes('fort') || q.includes('ballard')) panToLocation('fort');
+  else if (q.includes('air') || q.includes('csmia') || q.includes('shivaji')) panToLocation('airport');
+  else showToast('Location match found for: ' + query);
+}
+
+// Synchronize header pills when tab switched
+const originalSwitchTab = window.switchTab;
+window.switchTab = function(tabId, el) {
+  originalSwitchTab(tabId, el);
+  const topOverview = document.getElementById('topTabOverview');
+  const topMaps = document.getElementById('topTabAiMaps');
+  if (tabId === 'aimaps-tab') {
+    if (topMaps) topMaps.className = 'px-3 py-1.5 rounded-xl bg-cyan-500 text-slate-950 font-bold shadow-glow-cyan transition-all flex items-center gap-1.5';
+    if (topOverview) topOverview.className = 'px-3 py-1.5 rounded-xl text-slate-500 hover:text-cyan-400 font-bold transition-all flex items-center gap-1.5';
+  } else if (tabId === 'overview-tab') {
+    if (topOverview) topOverview.className = 'px-3 py-1.5 rounded-xl bg-cyan-500 text-slate-950 font-bold shadow-glow-cyan transition-all flex items-center gap-1.5';
+    if (topMaps) topMaps.className = 'px-3 py-1.5 rounded-xl text-slate-500 hover:text-cyan-400 font-bold transition-all flex items-center gap-1.5';
+  } else {
+    if (topOverview) topOverview.className = 'px-3 py-1.5 rounded-xl text-slate-500 hover:text-cyan-400 font-bold transition-all flex items-center gap-1.5';
+    if (topMaps) topMaps.className = 'px-3 py-1.5 rounded-xl text-slate-500 hover:text-cyan-400 font-bold transition-all flex items-center gap-1.5';
+  }
+};
+</script></body></html>
